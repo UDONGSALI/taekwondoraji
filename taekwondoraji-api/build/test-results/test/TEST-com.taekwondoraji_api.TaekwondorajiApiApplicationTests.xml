@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.taekwondoraji_api.TaekwondorajiApiApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-11T13:39:07.516Z" hostname="DESKTOP-O00A2SC" time="7.811">
+<testsuite name="com.taekwondoraji_api.TaekwondorajiApiApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-12T08:02:41.239Z" hostname="DESKTOP-O00A2SC" time="5.787">
   <properties/>
-  <testcase name="contextLoads()" classname="com.taekwondoraji_api.TaekwondorajiApiApplicationTests" time="0.513"/>
-  <system-out><![CDATA[22:39:07.815 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.taekwondoraji_api.TaekwondorajiApiApplicationTests]: TaekwondorajiApiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-22:39:08.051 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.taekwondoraji_api.TaekwondorajiApiApplication for test class com.taekwondoraji_api.TaekwondorajiApiApplicationTests
-22:39:08.240 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.taekwondoraji_api.TaekwondorajiApiApplicationTests]: TaekwondorajiApiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-22:39:08.242 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.taekwondoraji_api.TaekwondorajiApiApplication for test class com.taekwondoraji_api.TaekwondorajiApiApplicationTests
+  <testcase name="contextLoads()" classname="com.taekwondoraji_api.TaekwondorajiApiApplicationTests" time="0.395"/>
+  <system-out><![CDATA[17:02:41.464 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.taekwondoraji_api.TaekwondorajiApiApplicationTests]: TaekwondorajiApiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:02:41.616 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.taekwondoraji_api.TaekwondorajiApiApplication for test class com.taekwondoraji_api.TaekwondorajiApiApplicationTests
+17:02:41.729 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.taekwondoraji_api.TaekwondorajiApiApplicationTests]: TaekwondorajiApiApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:02:41.730 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.taekwondoraji_api.TaekwondorajiApiApplication for test class com.taekwondoraji_api.TaekwondorajiApiApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -16,20 +16,20 @@
 
  :: Spring Boot ::                (v4.0.5)
 
-2026-04-11T22:39:08.769+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] c.t.TaekwondorajiApiApplicationTests     : Starting TaekwondorajiApiApplicationTests using Java 21.0.10 with PID 24080 (started by 82107 in C:\Users\82107\Documents\taekwondoraji\taekwondoraji-api)
-2026-04-11T22:39:08.776+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] c.t.TaekwondorajiApiApplicationTests     : No active profile set, falling back to 1 default profile: "default"
-2026-04-11T22:39:08.777+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] o.s.boot.SpringApplication               : Loading source class com.taekwondoraji_api.TaekwondorajiApiApplication
-2026-04-11T22:39:08.830+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@2b680207
-2026-04-11T22:39:09.800+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-04-11T22:39:09.836+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.taekwondoraji_api'. Automatic @Repository and @Entity scanning is enabled.
-2026-04-11T22:39:09.853+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 35 ms. Found 0 JPA repository interfaces.
-2026-04-11T22:39:10.541+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-04-11T22:39:10.666+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
-2026-04-11T22:39:11.682+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-04-11T22:39:11.746+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-04-11T22:39:11.950+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@1d008e61
-2026-04-11T22:39:11.953+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-04-11T22:39:12.054+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-04-12T17:02:42.117+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] c.t.TaekwondorajiApiApplicationTests     : Starting TaekwondorajiApiApplicationTests using Java 21.0.10 with PID 20328 (started by 82107 in C:\Users\82107\Documents\taekwondoraji\taekwondoraji-api)
+2026-04-12T17:02:42.119+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] c.t.TaekwondorajiApiApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-04-12T17:02:42.121+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] o.s.boot.SpringApplication               : Loading source class com.taekwondoraji_api.TaekwondorajiApiApplication
+2026-04-12T17:02:42.165+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@2b680207
+2026-04-12T17:02:42.924+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-12T17:02:42.948+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] o.s.b.a.AutoConfigurationPackages        : @EnableAutoConfiguration was declared on a class in the package 'com.taekwondoraji_api'. Automatic @Repository and @Entity scanning is enabled.
+2026-04-12T17:02:43.019+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 82 ms. Found 2 JPA repository interfaces.
+2026-04-12T17:02:43.499+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-12T17:02:43.612+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-04-12T17:02:44.276+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-12T17:02:44.319+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-12T17:02:44.428+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@e2f6e13
+2026-04-12T17:02:44.431+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-12T17:02:44.501+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:mariadb://localhost/taekwondoraji?user=root&password=***]
 	Database driver: MariaDB Connector/J
 	Database dialect: MariaDBDialect
@@ -41,15 +41,32 @@
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-04-11T22:39:13.573+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-04-11T22:39:13.669+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-04-11T22:39:13.944+09:00  WARN 24080 --- [taekwondoraji-api] [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-04-11T22:39:13.988+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page template: index
-2026-04-11T22:39:14.325+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
-2026-04-11T22:39:14.359+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
-2026-04-11T22:39:14.398+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
-2026-04-11T22:39:14.520+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
-2026-04-11T22:39:14.760+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] .s.b.a.l.ConditionEvaluationReportLogger : 
+2026-04-12T17:02:45.554+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-12T17:02:45.620+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] org.hibernate.SQL                        : 
+    create table member (
+        seq bigint not null,
+        age varchar(255),
+        email varchar(255) not null,
+        name varchar(255) not null,
+        primary key (seq)
+    ) engine=InnoDB
+Hibernate: 
+    create table member (
+        seq bigint not null,
+        age varchar(255),
+        email varchar(255) not null,
+        name varchar(255) not null,
+        primary key (seq)
+    ) engine=InnoDB
+2026-04-12T17:02:45.635+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-12T17:02:45.735+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-12T17:02:46.026+09:00  WARN 20328 --- [taekwondoraji-api] [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-12T17:02:46.054+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page template: index
+2026-04-12T17:02:46.255+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : 8 mappings in 'requestMappingHandlerMapping'
+2026-04-12T17:02:46.280+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2026-04-12T17:02:46.311+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 1 @ModelAttribute, 0 @InitBinder, 2 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-04-12T17:02:46.408+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-04-12T17:02:46.583+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 
 ============================
@@ -684,9 +701,9 @@ Unconditional classes:
 
 
 
-2026-04-11T22:39:14.788+09:00  INFO 24080 --- [taekwondoraji-api] [    Test worker] c.t.TaekwondorajiApiApplicationTests     : Started TaekwondorajiApiApplicationTests in 6.409 seconds (process running for 8.753)
-2026-04-11T22:39:14.790+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
-2026-04-11T22:39:14.794+09:00 DEBUG 24080 --- [taekwondoraji-api] [    Test worker] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
+2026-04-12T17:02:46.610+09:00  INFO 20328 --- [taekwondoraji-api] [    Test worker] c.t.TaekwondorajiApiApplicationTests     : Started TaekwondorajiApiApplicationTests in 4.787 seconds (process running for 6.502)
+2026-04-12T17:02:46.613+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] o.s.b.a.ApplicationAvailabilityBean      : Application availability state LivenessState changed to CORRECT
+2026-04-12T17:02:46.616+09:00 DEBUG 20328 --- [taekwondoraji-api] [    Test worker] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed to ACCEPTING_TRAFFIC
 ]]></system-out>
   <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
 WARNING: A Java agent has been loaded dynamically (C:\Users\82107\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.17.8\f09415827a71be7ed621c7bd02550678f28bc81c\byte-buddy-agent-1.17.8.jar)

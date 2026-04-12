@@ -1,6 +1,7 @@
 package com.taekwondoraji_api.domain.admin.controller;
 
 import com.taekwondoraji_api.domain.admin.dto.AdminDashboardResponse;
+import com.taekwondoraji_api.domain.admin.dto.AdminGymInfoResponse;
 import com.taekwondoraji_api.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,5 +22,13 @@ public class AdminPageController {
 
         model.addAttribute("dashboard", dashboard);
         return "admin/dashboard";
+    }
+
+    @GetMapping("/gyminfo")
+    public String gymInfo(Model model) {
+        AdminGymInfoResponse gymInfo = adminService.getGymInfoList();
+
+        model.addAttribute("gymInfo", gymInfo);
+        return "admin/gyminfo";
     }
 }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout('도장 정보 관리', 'gyminfo', ~{::gymInfoContent})}">
+<th:block th:fragment="gymInfoContent">
+    <section class="content-panel">
+        <div class="gym-info-overview">
+            <div class="gym-info-intro">
+                <div class="panel-header">
+                    <span class="section-kicker">Gym Information</span>
+                    <h2>도장 정보 관리</h2>
+                </div>
+
+                <div class="hero-copy">
+                    <p>관리자 화면에서 전체 도장 현황과 서비스 상태를 확인하는 페이지입니다.</p>
+                </div>
+            </div>
+
+            <div class="gym-info-summary-grid">
+                <article class="info-card info-card-compact">
+                    <h3>전체</h3>
+                    <p th:text="${gymInfo.summary.totalCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>대기</h3>
+                    <p th:text="${gymInfo.summary.waitCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>운영 중</h3>
+                    <p th:text="${gymInfo.summary.activeCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>중지</h3>
+                    <p th:text="${gymInfo.summary.stopCount}">0</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header">
+            <span class="section-kicker">List</span>
+            <h2>도장 목록</h2>
+        </div>
+
+        <div class="summary-box">
+            <table class="gym-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>도장명</th>
+                    <th>상태</th>
+                    <th>사업자번호</th>
+                    <th>대표자</th>
+                    <th>전화번호</th>
+                    <th>주소</th>
+                    <th>지역</th>
+                    <th>서비스시작일</th>
+                    <th>서비스종료일</th>
+                    <th>등록일시</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${gymInfo.list}">
+                    <td th:text="${item.gymId}">${item.gymId}</td>
+                    <td th:text="${item.gymName}">도장명</td>
+                    <td th:text="${item.status}">active</td>
+                    <td th:text="${item.businessNumber}">사업자번호</td>
+                    <td th:text="${item.ownerName}">대표자</td>
+                    <td th:text="${item.phoneNumber}">전화번호</td>
+                    <td th:text="${item.address}">주소</td>
+                    <td th:text="${item.regionName}">지역</td>
+                    <td th:text="${item.serviceStartDate}">서비스시작일</td>
+                    <td th:text="${item.serviceEndDate}">서비스종료일</td>
+                    <td th:text="${#temporals.format(item.createdDt, 'yyyy-MM-dd HH:mm')}">등록일시</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(gymInfo.list)}">
+                    <td colspan="11">조회된 도장 정보가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</th:block>
+</html>

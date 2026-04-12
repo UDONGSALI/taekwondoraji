@@ -247,6 +247,29 @@ body.admin-body {
     gap: 16px;
 }
 
+.card-grid-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gym-info-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.gym-info-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.gym-info-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
 .info-card {
     min-height: 180px;
     padding: 22px;
@@ -267,6 +290,20 @@ body.admin-body {
     line-height: 1.45;
 }
 
+.info-card-compact {
+    min-height: 110px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-card-compact p {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--admin-primary);
+}
+
 .info-card p,
 .summary-box p {
     margin: 12px 0 0;
@@ -279,6 +316,30 @@ body.admin-body {
     border-radius: var(--admin-radius-md);
     border: 1px solid var(--admin-border);
     background: var(--admin-surface);
+}
+
+.gym-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.gym-table th,
+.gym-table td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.gym-table th {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--admin-muted);
+    background: var(--admin-surface-muted);
+}
+
+.gym-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .bold {
@@ -318,6 +379,14 @@ body.admin-body {
     .card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .card-grid-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gym-info-overview {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 860px) {
@@ -353,11 +422,32 @@ body.admin-body {
         grid-template-columns: 1fr;
     }
 
+    .card-grid-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .gym-info-summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
     .hero-copy p,
     .info-card p,
     .summary-box p,
     .brand-copy,
     .sidebar-footer p {
         font-size: 0.94rem;
+    }
+
+    .gym-table {
+        font-size: 0.9rem;
+    }
+
+    .gym-table th,
+    .gym-table td {
+        padding: 12px 8px;
+    }
+
+    .info-card-compact p {
+        font-size: 1.35rem;
     }
 }
