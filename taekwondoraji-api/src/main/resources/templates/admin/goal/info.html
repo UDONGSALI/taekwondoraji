@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout('목표 관리', 'goalinfo', ~{::goalInfoContent})}">
+<th:block th:fragment="goalInfoContent">
+    <link rel="stylesheet" th:href="@{/css/admin/goal/common.css(v='2')}">
+
+    <script th:if="${toastMessage != null}" th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof window.toastMsg === "function") {
+                window.toastMsg([[${toastMessage}]], [[${toastType != null ? toastType : 'success'}]]);
+            }
+        });
+    </script>
+
+    <section class="content-panel page-intro-panel">
+        <div class="goal-info-overview">
+            <div class="goal-info-intro">
+                <div class="panel-header">
+                    <h2>목표 관리</h2>
+                </div>
+
+                <div class="hero-copy">
+                    <p>운영 관리자 화면에서 공통 목표를 등록하고 관리할 수 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="goal-info-summary-grid">
+                <article class="info-card info-card-compact">
+                    <h3>전체</h3>
+                    <p th:text="${goalInfo.summary.totalCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>공통</h3>
+                    <p th:text="${goalInfo.summary.commonCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>커스텀</h3>
+                    <p th:text="${goalInfo.summary.customCount}">0</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header">
+            <h2>목표 등록</h2>
+        </div>
+
+        <form class="goal-create-form" th:action="@{/admin/goal}" th:object="${goalCreateForm}" method="post">
+            <div class="goal-create-grid">
+                <label class="goal-field">
+                    <span>목표 이름</span>
+                    <input type="text" th:field="*{name}" placeholder="목표 이름">
+                    <small class="goal-field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">오류</small>
+                </label>
+
+                <label class="goal-field">
+                    <span>카테고리</span>
+                    <select th:field="*{category}">
+                        <option value="">선택</option>
+                        <option th:each="category : ${goalCategories}"
+                                th:value="${category.value}"
+                                th:text="${category.value}">
+                            카테고리
+                        </option>
+                    </select>
+                    <small class="goal-field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}">오류</small>
+                </label>
+
+                <label class="goal-field">
+                    <span>포인트</span>
+                    <input type="number" th:field="*{point}" min="0" placeholder="0">
+                    <small class="goal-field-error" th:if="${#fields.hasErrors('point')}" th:errors="*{point}">오류</small>
+                </label>
+
+                <label class="goal-field goal-field-wide">
+                    <span>목표 설명</span>
+                    <input type="text" th:field="*{description}" placeholder="목표 설명">
+                    <small class="goal-field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">오류</small>
+                </label>
+
+                <label class="goal-field goal-field-wide">
+                    <span>설명 링크</span>
+                    <input type="text" th:field="*{link}" placeholder="https://example.com">
+                    <small class="goal-field-error" th:if="${#fields.hasErrors('link')}" th:errors="*{link}">오류</small>
+                </label>
+            </div>
+
+            <div class="goal-create-actions">
+                <button type="submit">입력</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header">
+            <h2>목표 목록</h2>
+        </div>
+
+        <div class="summary-box">
+            <table class="goal-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>카테고리</th>
+                    <th>포인트</th>
+                    <th>출처</th>
+                    <th>설명</th>
+                    <th>링크</th>
+                    <th>생성일시</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${goalInfo.list}">
+                    <td th:text="${item.goalId}">1</td>
+                    <td th:text="${item.name}">목표명</td>
+                    <td th:text="${item.category}">품새</td>
+                    <td th:text="${item.point}">100</td>
+                    <td th:text="${item.goalSource}">공통</td>
+                    <td th:text="${item.description != null and !#strings.isEmpty(item.description) ? item.description : '-'}">설명</td>
+                    <td>
+                        <a th:if="${item.link != null and !#strings.isEmpty(item.link)}"
+                           th:href="${item.link}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="goal-link">
+                            보기
+                        </a>
+                        <span th:if="${item.link == null or #strings.isEmpty(item.link)}">-</span>
+                    </td>
+                    <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
+                    <td>
+                        <form th:action="@{/admin/goal/{goalId}/delete(goalId=${item.goalId})}" method="post">
+                            <button type="submit" class="goal-delete-button">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(goalInfo.list)}">
+                    <td colspan="9">등록된 목표가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</th:block>
+</html>
