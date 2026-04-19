@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout('도장 상세', 'gyminfo', ~{::detailContent})}">
+<th:block th:fragment="detailContent">
+    <link rel="stylesheet" th:href="@{/css/admin/gym/common.css(v='6')}">
+    <script th:src="@{/js/admin/gym/detail.js(v='1')}" defer></script>
+
+    <div class="detail-layout" th:attr="data-gym-id=${gymDetail.gymInfo.gymId}">
+        <div class="detail-main">
+            <section class="content-panel panel-emphasis">
+                <div class="detail-card-header">
+                    <h3>기본 정보</h3>
+                    <div class="detail-card-actions">
+                        <span class="detail-badge" th:text="${gymDetail.gymInfo.status}">운영 중</span>
+                        <a th:href="@{/admin/gym/info}" class="filter-reset">목록으로</a>
+                    </div>
+                </div>
+
+                <div class="detail-info-grid">
+                    <div class="detail-field">
+                        <span class="detail-label">도장명</span>
+                        <strong class="detail-value" th:text="${gymDetail.gymInfo.gymName}">도장명</strong>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">사업자번호</span>
+                        <span class="detail-value" th:text="${gymDetail.gymInfo.businessNumber}">1234567890</span>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">대표자</span>
+                        <span class="detail-value" th:text="${gymDetail.gymInfo.ownerName}">대표자</span>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">전화번호</span>
+                        <span class="detail-value"
+                              th:text="${gymDetail.gymInfo.phoneNumber != null and !#strings.isEmpty(gymDetail.gymInfo.phoneNumber) ? gymDetail.gymInfo.phoneNumber : '-'}">
+                            010-0000-0000
+                        </span>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">지역</span>
+                        <span class="detail-value" th:text="${gymDetail.gymInfo.regionName}">서울</span>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">주소</span>
+                        <span class="detail-value" th:text="${gymDetail.gymInfo.address}">주소</span>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">서비스 상태</span>
+                        <select class="detail-control" name="serviceStatus" data-service-field>
+                            <option th:each="status : ${serviceStatuses}"
+                                    th:value="${status.name()}"
+                                    th:text="${status.label}"
+                                    th:selected="${status.name() == gymDetail.gymInfo.serviceStatusCode}">
+                                상태
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">등록일시</span>
+                        <span class="detail-value" th:text="${#temporals.format(gymDetail.gymInfo.createdDt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</span>
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">서비스 시작일</span>
+                        <input class="detail-control"
+                               type="date"
+                               name="serviceStartDate"
+                               data-service-field
+                               th:value="${gymDetail.gymInfo.serviceStartDate != null ? #temporals.format(gymDetail.gymInfo.serviceStartDate, 'yyyy-MM-dd') : ''}">
+                    </div>
+
+                    <div class="detail-field">
+                        <span class="detail-label">서비스 종료일</span>
+                        <input class="detail-control"
+                               type="date"
+                               name="serviceEndDate"
+                               data-service-field
+                               th:value="${gymDetail.gymInfo.serviceEndDate != null ? #temporals.format(gymDetail.gymInfo.serviceEndDate, 'yyyy-MM-dd') : ''}">
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-panel panel-emphasis">
+                <div class="detail-card-header">
+                    <h3>관리자</h3>
+                    <span class="detail-count-chip" th:text="|${gymDetail.members.adminCount}명|">0명</span>
+                </div>
+
+                <div class="member-list" th:if="${!#lists.isEmpty(gymDetail.members.adminList)}">
+                    <article class="member-card" th:each="item : ${gymDetail.members.adminList}">
+                        <div class="member-card-top">
+                            <strong th:text="${item.memberName}">홍길동</strong>
+                            <span class="member-role" th:text="${item.memberRole}">관장</span>
+                        </div>
+                        <div class="member-card-bottom">
+                            <span th:text="${item.memberStatus}">서비스 중</span>
+                            <span th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</span>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="detail-empty" th:if="${#lists.isEmpty(gymDetail.members.adminList)}">
+                    <strong>연결된 관리자 정보가 없습니다.</strong>
+                    <p>관장과 사범은 `member_gym_map`에서 `master`, `teacher` 역할로 연결되면 이 영역에 표시됩니다.</p>
+                </div>
+            </section>
+        </div>
+
+        <div class="detail-side">
+            <section class="content-panel panel-emphasis member-scroll-panel">
+                <div class="detail-card-header">
+                    <h3>관원</h3>
+                    <span class="detail-count-chip" th:text="|${gymDetail.members.memberCount}명|">0명</span>
+                </div>
+
+                <div class="member-scroll-body" th:if="${!#lists.isEmpty(gymDetail.members.memberList)}">
+                    <div class="member-list">
+                        <article class="member-card" th:each="item : ${gymDetail.members.memberList}">
+                            <div class="member-card-top">
+                                <strong th:text="${item.memberName}">홍길동</strong>
+                                <span class="member-role" th:text="${item.memberRole}">관원</span>
+                            </div>
+                            <div class="member-card-bottom">
+                                <span th:text="${item.memberStatus}">서비스 중</span>
+                                <span th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="detail-empty" th:if="${#lists.isEmpty(gymDetail.members.memberList)}">
+                    <strong>연결된 관원 정보가 없습니다.</strong>
+                    <p>일반 회원은 `member_gym_map`에서 `member` 역할로 연결되면 이 영역에 표시됩니다.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</th:block>
+</html>

@@ -1,4 +1,4 @@
-package com.taekwondoraji_api.domain.admin.dto;
+package com.taekwondoraji_api.domain.admin.gym.dto;
 
 public record GymInfoSummary(
         int totalCount,

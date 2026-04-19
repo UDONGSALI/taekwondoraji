@@ -62,4 +62,10 @@ public class GymInfo extends BaseEntity {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
+
+    public void updateServiceInfo(GymServiceStatus serviceStatus, LocalDate serviceStartDate, LocalDate serviceEndDate) {
+        this.serviceStatus = serviceStatus;
+        this.serviceStartDate = serviceStartDate;
+        this.serviceEndDate = serviceEndDate;
+    }
 }
