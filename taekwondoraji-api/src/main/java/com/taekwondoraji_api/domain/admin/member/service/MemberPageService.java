@@ -79,7 +79,7 @@ public class MemberPageService {
                 memberGymMap.getGym().getGymName(),
                 memberGymMap.getMemberRole().getLabel(),
                 memberGymMap.getMemberStatus().getLabel(),
-                memberGymMap.getCreatedDt()
+                memberGymMap.getCreatedAt()
         );
     }
 }

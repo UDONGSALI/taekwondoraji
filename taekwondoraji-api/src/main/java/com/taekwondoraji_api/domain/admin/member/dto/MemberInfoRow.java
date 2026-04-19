@@ -10,6 +10,6 @@ public record MemberInfoRow(
         String gymName,
         String memberRole,
         String memberStatus,
-        LocalDateTime createdDt
+        LocalDateTime createdAt
 ) {
 }

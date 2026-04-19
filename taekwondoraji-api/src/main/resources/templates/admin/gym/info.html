@@ -109,7 +109,7 @@
                     <td th:text="${item.regionName}">지역</td>
                     <td th:text="${item.serviceStartDate != null ? #temporals.format(item.serviceStartDate, 'yyyy-MM-dd') : '-'}">2026-04-01</td>
                     <td th:text="${item.serviceEndDate != null ? #temporals.format(item.serviceEndDate, 'yyyy-MM-dd') : '-'}">2026-12-31</td>
-                    <td th:text="${#temporals.format(item.createdDt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
+                    <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(gymInfo.list)}">
                     <td colspan="11">조회된 도장 정보가 없습니다.</td>

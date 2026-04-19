@@ -93,7 +93,7 @@
                     <td th:text="${item.gymName}">도장명</td>
                     <td th:text="${item.memberRole}">관장</td>
                     <td th:text="${item.memberStatus}">서비스 중</td>
-                    <td th:text="${#temporals.format(item.createdDt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
+                    <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(memberInfo.list)}">
                     <td colspan="8">조회된 회원 정보가 없습니다.</td>
