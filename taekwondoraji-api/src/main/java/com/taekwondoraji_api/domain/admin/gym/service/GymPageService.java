@@ -147,7 +147,7 @@ public class GymPageService {
                 regionName,
                 gymInfo.getServiceStartDate(),
                 gymInfo.getServiceEndDate(),
-                gymInfo.getCreatedDt()
+                gymInfo.getCreatedAt()
         );
     }
 

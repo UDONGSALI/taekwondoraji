@@ -15,6 +15,6 @@ public record GymInfoRow(
         String regionName,
         LocalDate serviceStartDate,
         LocalDate serviceEndDate,
-        LocalDateTime createdDt
+        LocalDateTime createdAt
 ) {
 }
