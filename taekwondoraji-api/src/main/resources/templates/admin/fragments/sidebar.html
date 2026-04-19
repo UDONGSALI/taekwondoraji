@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="admin-sidebar" th:fragment="sidebar(activeMenu)">
+    <div class="brand-block">
+        <span class="brand-kicker">TAEKWONDORAJI</span>
+        <strong class="brand-title">System Admin</strong>
+        <p class="brand-copy">플랫폼 운영 전반을 관리하는 내부 관리자 영역입니다.</p>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'dashboard'} ? ' is-active' : ''"
+           th:href="@{/admin}">
+            <span class="nav-label">대시보드</span>
+            <span class="nav-meta">Overview</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'gyminfo'} ? ' is-active' : ''"
+           th:href="@{/admin/gym/info}">
+            <span class="nav-label">도장 정보 관리</span>
+            <span class="nav-meta">Gym Info</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'memberinfo'} ? ' is-active' : ''"
+           th:href="@{/admin/member/info}">
+            <span class="nav-label">회원 관리</span>
+            <span class="nav-meta">Members</span>
+        </a>
+
+        <a class="nav-link" href="#">
+            <span class="nav-label">결제 및 구독</span>
+            <span class="nav-meta">Payments</span>
+        </a>
+
+        <a class="nav-link" href="#">
+            <span class="nav-label">마스터 목표 데이터</span>
+            <span class="nav-meta">Goals</span>
+        </a>
+
+        <a class="nav-link" href="#">
+            <span class="nav-label">공지 및 운영 정책</span>
+            <span class="nav-meta">Policies</span>
+        </a>
+
+        <a class="nav-link" href="#">
+            <span class="nav-label">고객 지원 대응</span>
+            <span class="nav-meta">Support</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <span class="footer-chip">Internal Only</span>
+        <p>공통 레이아웃과 스타일을 기준으로 관리자 페이지를 확장하고 있습니다.</p>
+    </div>
+</aside>
+</body>
+</html>

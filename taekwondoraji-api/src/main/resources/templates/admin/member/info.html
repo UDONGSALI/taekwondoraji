@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout('회원 관리', 'memberinfo', ~{::memberInfoContent})}">
+<th:block th:fragment="memberInfoContent">
+    <link rel="stylesheet" th:href="@{/css/admin/member/common.css(v='1')}">
+
+    <section class="content-panel page-intro-panel">
+        <div class="member-info-overview">
+            <div class="member-info-intro">
+                <div class="panel-header">
+                    <h2>회원 관리</h2>
+                </div>
+
+                <div class="hero-copy">
+                    <p>운영 관리자 화면에서 전체 회원 현황과 소속 도장, 역할, 상태를 함께 확인할 수 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="member-info-summary-grid">
+                <article class="info-card info-card-compact">
+                    <h3>전체</h3>
+                    <p th:text="${memberInfo.summary.totalCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>대기</h3>
+                    <p th:text="${memberInfo.summary.waitCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>서비스 중</h3>
+                    <p th:text="${memberInfo.summary.activeCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>정지</h3>
+                    <p th:text="${memberInfo.summary.stopCount}">0</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header panel-header-row">
+            <div>
+                <h2>회원 목록</h2>
+            </div>
+
+            <form class="table-filter-form" th:action="@{/admin/member/info}" th:object="${param}" method="get">
+                <select th:field="*{memberRole}">
+                    <option value="">역할 전체</option>
+                    <option th:each="role : ${memberRoles}"
+                            th:value="${role.name()}"
+                            th:text="${role.label}">
+                        역할
+                    </option>
+                </select>
+
+                <select th:field="*{memberStatus}">
+                    <option value="">상태 전체</option>
+                    <option th:each="status : ${memberStatuses}"
+                            th:value="${status.name()}"
+                            th:text="${status.label}">
+                        상태
+                    </option>
+                </select>
+
+                <button type="submit">검색</button>
+                <a th:href="@{/admin/member/info}" class="filter-reset">초기화</a>
+            </form>
+        </div>
+
+        <div class="summary-box">
+            <table class="member-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>로그인 ID</th>
+                    <th>연락처</th>
+                    <th>소속</th>
+                    <th>역할</th>
+                    <th>상태</th>
+                    <th>등록일시</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${memberInfo.list}">
+                    <td th:text="${item.memberId}">1</td>
+                    <td th:text="${item.memberName}">홍길동</td>
+                    <td th:text="${item.loginId}">hong</td>
+                    <td th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</td>
+                    <td th:text="${item.gymName}">도장명</td>
+                    <td th:text="${item.memberRole}">관장</td>
+                    <td th:text="${item.memberStatus}">서비스 중</td>
+                    <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(memberInfo.list)}">
+                    <td colspan="8">조회된 회원 정보가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</th:block>
+</html>

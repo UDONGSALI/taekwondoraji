@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/fragments/layout :: layout('서비스 운영 관리자', 'dashboard', ~{::dashboardContent})}">
+<th:block th:fragment="dashboardContent">
+    <section class="content-hero">
+        <div class="hero-copy">
+            <span class="eyebrow">SERVICE OPERATION CONSOLE</span>
+            <h1 th:text="${dashboard.title}">서비스 운영 관리자</h1>
+            <p th:text="${dashboard.description}">
+                도장 고객, 전체 회원, 결제 상품, 정책, 공지, 지원을 통합 관리하는 운영 대시보드입니다.
+            </p>
+        </div>
+
+        <div class="hero-stat">
+            <span class="hero-stat-label">운영 축</span>
+            <strong class="hero-stat-value">6</strong>
+            <span class="hero-stat-copy">고객, 회원, 결제, 목표, 정책, 지원</span>
+        </div>
+    </section>
+
+    <section class="content-panel">
+        <div class="panel-header">
+            <h2>핵심 운영 범위</h2>
+        </div>
+
+        <div class="card-grid">
+            <article class="info-card">
+                <h3>도장 고객 관리</h3>
+                <p>운영 중인 도장 계정과 서비스 이용 상태를 빠르게 파악합니다.</p>
+            </article>
+
+            <article class="info-card">
+                <h3>전체 회원 관리</h3>
+                <p>플랫폼 회원의 흐름을 확인하고 필요한 운영 조치를 연결합니다.</p>
+            </article>
+
+            <article class="info-card">
+                <h3>결제 상품 및 구독 관리</h3>
+                <p>상품 정책과 구독 상태를 일관된 기준으로 정리합니다.</p>
+            </article>
+
+            <article class="info-card">
+                <h3>마스터 목표 데이터 관리</h3>
+                <p>서비스 전반에서 함께 쓰는 기준 데이터를 중앙에서 유지합니다.</p>
+            </article>
+
+            <article class="info-card">
+                <h3>공지 및 운영 정책 관리</h3>
+                <p>내부 운영 기준과 공지 흐름을 한 화면에서 정돈할 수 있습니다.</p>
+            </article>
+
+            <article class="info-card">
+                <h3>고객 지원 대응</h3>
+                <p>문의와 요청을 빠르게 정리하고 지원 동선을 매끄럽게 연결합니다.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header">
+            <h2>공통 관리자 틀</h2>
+        </div>
+
+        <div class="summary-box">
+            <p>
+                현재 구조는 왼쪽 사이드바와 공통 스타일을 재사용하고, 오른쪽 본문만 각 페이지마다
+                바뀌도록 설계되어 있습니다. 이후 관리자 상세 페이지도 같은 레이아웃을 그대로 사용할 수 있습니다.
+            </p>
+        </div>
+    </section>
+</th:block>
+</html>
