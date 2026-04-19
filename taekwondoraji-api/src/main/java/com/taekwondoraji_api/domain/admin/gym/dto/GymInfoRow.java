@@ -1,11 +1,12 @@
-package com.taekwondoraji_api.domain.admin.dto;
+package com.taekwondoraji_api.domain.admin.gym.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record GymInfoItem(
+public record GymInfoRow(
         Long gymId,
         String gymName,
+        String serviceStatusCode,
         String status,
         String businessNumber,
         String ownerName,

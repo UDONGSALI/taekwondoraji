@@ -1,4 +1,4 @@
-package com.taekwondoraji_api.domain.gym.entity;
+package com.taekwondoraji_api.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
