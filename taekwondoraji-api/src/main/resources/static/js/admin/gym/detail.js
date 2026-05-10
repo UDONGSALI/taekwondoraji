@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const serviceStartDateField = detailLayout.querySelector('[name="serviceStartDate"]');
     const serviceEndDateField = detailLayout.querySelector('[name="serviceEndDate"]');
     const gymUpdateFields = detailLayout.querySelectorAll("[data-service-field]");
+    const memberStatusFields = detailLayout.querySelectorAll("[data-member-status-field]");
 
     if (!gymId || !serviceStatusField || !serviceStartDateField || !serviceEndDateField) {
         return;
@@ -55,5 +56,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
     gymUpdateFields.forEach((field) => {
         field.addEventListener("change", updateGym);
+    });
+
+    const updateMemberStatus = async (field) => {
+        const memberId = field.getAttribute("data-member-id");
+        const previousValue = field.getAttribute("data-current-value") || field.value;
+
+        if (!memberId) {
+            return;
+        }
+
+        field.disabled = true;
+
+        try {
+            const response = await fetch(`/admin/api/gym/${gymId}/members/${memberId}/status`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    memberStatus: field.value
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "저장에 실패했습니다.");
+            }
+
+            field.setAttribute("data-current-value", field.value);
+
+            if (typeof window.toastMsg === "function") {
+                window.toastMsg("관원 상태가 저장되었습니다.", "success");
+            }
+        } catch (error) {
+            field.value = previousValue;
+
+            if (typeof window.toastMsg === "function") {
+                window.toastMsg(error.message || "저장에 실패했습니다.", "error");
+            }
+        } finally {
+            field.disabled = false;
+        }
+    };
+
+    memberStatusFields.forEach((field) => {
+        field.setAttribute("data-current-value", field.value);
+        field.addEventListener("change", () => updateMemberStatus(field));
     });
 });

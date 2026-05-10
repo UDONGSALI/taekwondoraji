@@ -16,4 +16,8 @@ public interface GymInfoRepository extends JpaRepository<GymInfo, Integer>, JpaS
     }
 
     long countByServiceStatus(GymServiceStatus serviceStatus);
+
+    List<GymInfo> findAllByIsActiveTrueOrderByGymNameAsc();
+
+    List<GymInfo> findAllByIsActiveTrueAndRegionCodeOrderByGymNameAsc(String regionCode);
 }

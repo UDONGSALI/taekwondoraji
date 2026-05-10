@@ -5,6 +5,7 @@ import com.taekwondoraji_api.domain.admin.gym.dto.GymDetailPage;
 import com.taekwondoraji_api.domain.admin.gym.dto.GymInfoPage;
 import com.taekwondoraji_api.domain.admin.gym.service.GymPageService;
 import com.taekwondoraji_api.domain.gym.entity.GymServiceStatus;
+import com.taekwondoraji_api.domain.member.entity.MemberStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,7 @@ public class GymPageController {
 
         model.addAttribute("gymDetail", gymDetail);
         model.addAttribute("serviceStatuses", GymServiceStatus.values());
+        model.addAttribute("memberStatuses", MemberStatus.values());
 
         return "admin/gym/detail";
     }

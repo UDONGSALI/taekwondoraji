@@ -100,7 +100,16 @@
                             <span class="member-role" th:text="${item.memberRole}">관장</span>
                         </div>
                         <div class="member-card-bottom">
-                            <span th:text="${item.memberStatus}">서비스 중</span>
+                            <select class="member-status-select"
+                                    data-member-status-field
+                                    th:attr="data-member-id=${item.memberId}">
+                                <option th:each="status : ${memberStatuses}"
+                                        th:value="${status.name()}"
+                                        th:text="${status.label}"
+                                        th:selected="${status.name() == item.memberStatusCode}">
+                                    상태
+                                </option>
+                            </select>
                             <span th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</span>
                         </div>
                     </article>
@@ -128,7 +137,16 @@
                                 <span class="member-role" th:text="${item.memberRole}">관원</span>
                             </div>
                             <div class="member-card-bottom">
-                                <span th:text="${item.memberStatus}">서비스 중</span>
+                                <select class="member-status-select"
+                                        data-member-status-field
+                                        th:attr="data-member-id=${item.memberId}">
+                                    <option th:each="status : ${memberStatuses}"
+                                            th:value="${status.name()}"
+                                            th:text="${status.label}"
+                                            th:selected="${status.name() == item.memberStatusCode}">
+                                        상태
+                                    </option>
+                                </select>
                                 <span th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</span>
                             </div>
                         </article>
