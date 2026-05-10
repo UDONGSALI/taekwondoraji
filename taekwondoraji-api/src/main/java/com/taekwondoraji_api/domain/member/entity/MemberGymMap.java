@@ -43,4 +43,33 @@ public class MemberGymMap extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "member_status", nullable = false)
     private MemberStatus memberStatus;
+
+    @Column(name = "belt_name", nullable = false, length = 20)
+    private String beltName;
+
+    @Column(name = "point", nullable = false)
+    private Integer point;
+
+    public static MemberGymMap create(MemberInfo memberInfo, GymInfo gym) {
+        MemberGymMap memberGymMap = new MemberGymMap();
+        memberGymMap.memberInfo = memberInfo;
+        memberGymMap.gym = gym;
+        memberGymMap.memberRole = MemberRole.member;
+        memberGymMap.memberStatus = MemberStatus.wait;
+        memberGymMap.beltName = "white";
+        memberGymMap.point = 0;
+        return memberGymMap;
+    }
+
+    public void updateMemberStatus(MemberStatus memberStatus) {
+        this.memberStatus = memberStatus;
+    }
+
+    public void updateBeltName(String beltName) {
+        this.beltName = beltName;
+    }
+
+    public void updatePoint(Integer point) {
+        this.point = point;
+    }
 }

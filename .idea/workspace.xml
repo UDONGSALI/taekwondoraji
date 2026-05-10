@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="10b0d9ad-f553-40b1-9753-3551caba29da" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/taekwondoraji.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/taekwondoraji.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taekwondoraji-app/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/taekwondoraji-app/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taekwondoraji-app/lib/screens/gym_selection_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/taekwondoraji-app/lib/screens/gym_selection_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/taekwondoraji-app/lib/screens/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/taekwondoraji-app/lib/screens/login_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,19 +22,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Dart 명령줄 앱.main.dart.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "develop__web__jh",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/82107/Documents/taekwondoraji",
-    "settings.editor.selected.configurable": "dart.settings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Dart 명령줄 앱.main.dart.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop__web__jh&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/82107/Documents/taekwondoraji&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;dart.settings&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

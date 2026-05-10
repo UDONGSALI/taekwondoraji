@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/login_screen.dart';
+import 'theme/app_theme.dart';
 
 const appTitle = '태권도라지';
 
@@ -16,11 +17,7 @@ class TaekwondorajiApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: appTitle,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        scaffoldBackgroundColor: const Color(0xFFF8F8F8),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light(),
       home: const LoginScreen(),
     );
   }

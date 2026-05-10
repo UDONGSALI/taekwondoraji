@@ -1,6 +1,7 @@
 package com.taekwondoraji_api.domain.admin.gym.controller;
 
 import com.taekwondoraji_api.common.response.ApiResponse;
+import com.taekwondoraji_api.domain.admin.gym.dto.GymMemberStatusUpdateRequest;
 import com.taekwondoraji_api.domain.admin.gym.dto.GymUpdateRequest;
 import com.taekwondoraji_api.domain.admin.gym.service.GymCommandService;
 import jakarta.validation.Valid;
@@ -24,6 +25,16 @@ public class GymRestController {
             @Valid @RequestBody GymUpdateRequest request
     ) {
         gymCommandService.updateGym(gymId, request);
+        return ApiResponse.ok();
+    }
+
+    @PatchMapping("/{gymId}/members/{memberId}/status")
+    public ApiResponse<Void> updateGymMemberStatus(
+            @PathVariable Integer gymId,
+            @PathVariable Integer memberId,
+            @Valid @RequestBody GymMemberStatusUpdateRequest request
+    ) {
+        gymCommandService.updateGymMemberStatus(gymId, memberId, request);
         return ApiResponse.ok();
     }
 }

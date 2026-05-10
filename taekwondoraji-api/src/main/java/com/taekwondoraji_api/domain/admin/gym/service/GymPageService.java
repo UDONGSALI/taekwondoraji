@@ -106,6 +106,7 @@ public class GymPageService {
                 memberMap.getMemberInfo().getMemberId(),
                 memberMap.getMemberInfo().getMemberName(),
                 memberMap.getMemberRole().getLabel(),
+                memberMap.getMemberStatus().name(),
                 memberMap.getMemberStatus().getLabel(),
                 memberMap.getMemberInfo().getPhoneNumber()
         );

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body, #postcode {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="postcode"></div>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script>
+    new daum.Postcode({
+      oncomplete: function(data) {
+        parent.postMessage({
+          type: 'daum-postcode',
+          zonecode: data.zonecode,
+          roadAddress: data.roadAddress
+        }, window.location.origin);
+      },
+      width: '100%',
+      height: '100%'
+    }).embed(document.getElementById('postcode'));
+  </script>
+</body>
+</html>

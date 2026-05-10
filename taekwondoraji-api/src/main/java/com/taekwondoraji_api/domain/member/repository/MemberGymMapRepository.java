@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberGymMapRepository extends JpaRepository<MemberGymMap, Integer>, JpaSpecificationExecutor<MemberGymMap> {
 
@@ -17,6 +18,13 @@ public interface MemberGymMapRepository extends JpaRepository<MemberGymMap, Inte
 
     @EntityGraph(attributePaths = "memberInfo")
     List<MemberGymMap> findAllByGym_GymIdOrderByMemberGymMapIdDesc(Integer gymId);
+
+    @EntityGraph(attributePaths = {"memberInfo", "gym"})
+    List<MemberGymMap> findAllByMemberInfo_MemberIdOrderByMemberGymMapIdDesc(Integer memberId);
+
+    boolean existsByMemberInfo_MemberIdAndGym_GymId(Integer memberId, Integer gymId);
+
+    Optional<MemberGymMap> findByGym_GymIdAndMemberInfo_MemberId(Integer gymId, Integer memberId);
 
     long countByMemberStatus(MemberStatus memberStatus);
 

@@ -4,6 +4,7 @@ public record GymMemberRow(
         Integer memberId,
         String memberName,
         String memberRole,
+        String memberStatusCode,
         String memberStatus,
         String phoneNumber
 ) {

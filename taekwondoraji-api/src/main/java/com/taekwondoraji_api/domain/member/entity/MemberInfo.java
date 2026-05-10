@@ -45,4 +45,26 @@ public class MemberInfo extends BaseEntity {
 
     @Column(name = "address_detail", length = 255)
     private String addressDetail;
+
+    public static MemberInfo create(
+            String loginId,
+            String loginPassword,
+            String memberName,
+            Integer age,
+            String phoneNumber,
+            String postalCode,
+            String addressRoad,
+            String addressDetail
+    ) {
+        MemberInfo memberInfo = new MemberInfo();
+        memberInfo.loginId = loginId;
+        memberInfo.loginPassword = loginPassword;
+        memberInfo.memberName = memberName;
+        memberInfo.age = age;
+        memberInfo.phoneNumber = phoneNumber;
+        memberInfo.postalCode = postalCode;
+        memberInfo.addressRoad = addressRoad;
+        memberInfo.addressDetail = addressDetail;
+        return memberInfo;
+    }
 }
