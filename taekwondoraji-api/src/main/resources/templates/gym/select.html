@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도장 선택</title>
+    <link rel="stylesheet" th:href="@{/css/admin/common.css(v='6')}">
+    <link rel="stylesheet" th:href="@{/css/auth/common.css(v='1')}">
+</head>
+<body class="auth-body">
+<main class="gym-select-shell">
+    <section class="gym-select-header">
+        <div>
+            <span>TAEKWONDORAJI</span>
+            <h1>도장 선택</h1>
+            <p th:text="|${loginMemberName}님이 사용할 도장을 선택하거나 새 도장을 만들어 주세요.|">
+                사용할 도장을 선택하거나 새 도장을 만들어 주세요.
+            </p>
+        </div>
+        <div class="gym-select-actions">
+            <a th:href="@{/gym/create}">도장 만들기</a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">로그아웃</button>
+            </form>
+        </div>
+    </section>
+
+    <p class="auth-error" th:if="${accessError}">해당 도장에 접근할 권한이 없습니다.</p>
+
+    <section class="gym-select-grid" th:if="${!#lists.isEmpty(managedGyms)}">
+        <a class="gym-select-card"
+           th:each="gym : ${managedGyms}"
+           th:href="@{/gym/{gymId}/member/info(gymId=${gym.gymId})}">
+            <strong th:text="${gym.gymName}">도장명</strong>
+            <span th:text="${gym.memberRole}">관리자</span>
+            <em th:text="${gym.memberStatus}">서비스 중</em>
+        </a>
+    </section>
+
+    <section class="gym-select-empty" th:if="${#lists.isEmpty(managedGyms)}">
+        <h2>아직 관리 중인 도장이 없습니다.</h2>
+        <p>도장을 만들면 현재 계정이 관장으로 등록되고 바로 관리 화면을 사용할 수 있습니다.</p>
+        <a th:href="@{/gym/create}">첫 도장 만들기</a>
+    </section>
+</main>
+</body>
+</html>

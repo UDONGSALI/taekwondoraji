@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="admin-sidebar" th:fragment="sidebar(activeMenu, gymId)">
+    <div class="brand-block">
+        <strong class="brand-greeting" th:text="|${loginMemberName}님 안녕하세요|">안녕하세요</strong>
+        <select class="sidebar-gym-select"
+                onchange="if (this.value) window.location.href = this.value">
+            <option th:each="gym : ${sidebarManagedGyms}"
+                    th:value="@{/gym/{selectedGymId}/member/info(selectedGymId=${gym.gymId})}"
+                    th:selected="${gym.gymId == gymId}"
+                    th:text="${gym.gymName}">
+                도장명
+            </option>
+        </select>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'memberinfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/member/info(gymId=${gymId})}">
+            <span class="nav-label">회원 관리</span>
+            <span class="nav-meta">Members</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'attendanceinfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/attendance/info(gymId=${gymId})}">
+            <span class="nav-label">회원 출석 관리</span>
+            <span class="nav-meta">Attendance</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'goalinfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/goal/info(gymId=${gymId})}">
+            <span class="nav-label">목표 관리</span>
+            <span class="nav-meta">Goals</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'dailyquestinfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/daily-quest/info(gymId=${gymId})}">
+            <span class="nav-label">일퀘 관리</span>
+            <span class="nav-meta">Daily Quest</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'pointiteminfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/point-item/info(gymId=${gymId})}">
+            <span class="nav-label">포인트 아이템</span>
+            <span class="nav-meta">Point Items</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'membergoalinfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/member-goal/info(gymId=${gymId})}">
+            <span class="nav-label">회원 목표 관리</span>
+            <span class="nav-meta">Member Goals</span>
+        </a>
+
+        <a class="nav-link"
+           th:classappend="${activeMenu == 'memberdailyquestinfo'} ? ' is-active' : ''"
+           th:href="@{/gym/{gymId}/member-daily-quest/info(gymId=${gymId})}">
+            <span class="nav-label">회원 일퀘 관리</span>
+            <span class="nav-meta">Member Daily Quest</span>
+        </a>
+    </nav>
+</aside>
+</body>
+</html>

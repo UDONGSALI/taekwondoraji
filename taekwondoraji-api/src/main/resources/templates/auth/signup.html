@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이디 생성</title>
+    <link rel="stylesheet" th:href="@{/css/auth/common.css(v='1')}">
+</head>
+<body class="auth-body">
+<main class="auth-shell">
+    <section class="auth-panel">
+        <div class="auth-copy">
+            <span>TAEKWONDORAJI</span>
+            <h1>아이디 생성</h1>
+            <p>웹과 앱에서 함께 사용할 기본 회원 아이디를 만듭니다.</p>
+        </div>
+
+        <form class="auth-form" th:action="@{/signup}" th:object="${signupForm}" method="post">
+            <p class="auth-error" th:if="${signupError}" th:text="${signupError}">필수 정보를 확인해 주세요.</p>
+
+            <label>
+                <span>로그인 아이디</span>
+                <input type="text" th:field="*{loginId}" autocomplete="username" autofocus>
+            </label>
+
+            <label>
+                <span>비밀번호</span>
+                <input type="password" th:field="*{loginPassword}" autocomplete="new-password">
+            </label>
+
+            <label>
+                <span>이름</span>
+                <input type="text" th:field="*{memberName}" autocomplete="name">
+            </label>
+
+            <div class="auth-form-grid">
+                <label>
+                    <span>나이</span>
+                    <input type="number" th:field="*{age}" min="1" max="120">
+                </label>
+
+                <label>
+                    <span>연락처</span>
+                    <input type="text" th:field="*{phoneNumber}" autocomplete="tel">
+                </label>
+            </div>
+
+            <button type="submit">아이디 생성</button>
+            <a th:href="@{/login}">로그인으로 돌아가기</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

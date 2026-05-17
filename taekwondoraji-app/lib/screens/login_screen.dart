@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   const SizedBox(height: 28),
-                  const Center(
+                  Center(
                     child: Text(
                       _appName,
                       textAlign: TextAlign.center,
@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Center(
+                  Center(
                     child: Text(
                       _tagline,
                       textAlign: TextAlign.center,
@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen>
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.primary,
-                        side: const BorderSide(color: AppColors.border),
+                        side: BorderSide(color: AppColors.border),
                         backgroundColor: AppColors.surface,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -313,9 +313,9 @@ class _LoginDialogState extends State<_LoginDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('로그인', style: AppTextStyles.screenTitle),
+            Text('로그인', style: AppTextStyles.screenTitle),
             const SizedBox(height: 6),
-            const Text('오늘의 수련을 시작해요', style: AppTextStyles.subtitle),
+            Text('오늘의 수련을 시작해요', style: AppTextStyles.subtitle),
             const SizedBox(height: 20),
             TextField(
               controller: _loginIdController,
@@ -349,7 +349,7 @@ class _LoginDialogState extends State<_LoginDialog> {
                 ),
                 child: Text(
                   _isSubmitting ? '확인 중...' : '로그인',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0,
@@ -372,15 +372,15 @@ InputDecoration _loginInputDecoration(String label) {
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.border),
+      borderSide: BorderSide(color: AppColors.border),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.border),
+      borderSide: BorderSide(color: AppColors.border),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.primary),
+      borderSide: BorderSide(color: AppColors.primary),
     ),
   );
 }

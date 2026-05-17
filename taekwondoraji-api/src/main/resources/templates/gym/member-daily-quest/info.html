@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{gym/fragments/layout :: layout('회원 일퀘 관리', 'memberdailyquestinfo', ${gymId}, ~{::memberDailyQuestInfoContent})}">
+<th:block th:fragment="memberDailyQuestInfoContent">
+    <link rel="stylesheet" th:href="@{/css/admin/goal/common.css(v='3')}">
+
+    <script th:if="${toastMessage != null}" th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof window.toastMsg === "function") {
+                window.toastMsg([[${toastMessage}]], [[${toastType != null ? toastType : 'success'}]]);
+            }
+        });
+    </script>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header panel-header-row">
+            <div>
+                <h2 th:text="|${memberDailyQuestInfo.questDate} 일퀘|">오늘 일퀘</h2>
+            </div>
+
+            <input type="date"
+                   class="member-daily-quest-date"
+                   th:value="${memberDailyQuestInfo.questDate}"
+                   th:attr="data-url-prefix=@{/gym/{gymId}/member-daily-quest/info(gymId=${gymId})}"
+                   onchange="if (this.value) window.location.href = this.dataset.urlPrefix + '?questDate=' + this.value">
+        </div>
+
+        <div class="summary-box">
+            <table class="goal-table">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>이름</th>
+                    <th>포인트</th>
+                    <th>설명</th>
+                    <th>링크</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, iterStat : ${memberDailyQuestInfo.quests}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${item.name}">일퀘명</td>
+                    <td th:text="${item.point}">100</td>
+                    <td th:text="${item.description != null and !#strings.isEmpty(item.description) ? item.description : '-'}">설명</td>
+                    <td>
+                        <a th:if="${item.link != null and !#strings.isEmpty(item.link)}"
+                           th:href="${item.link}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="goal-link">
+                            보기
+                        </a>
+                        <span th:if="${item.link == null or #strings.isEmpty(item.link)}">-</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(memberDailyQuestInfo.quests)}">
+                    <td colspan="5">선택한 날짜에 등록된 일퀘가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header">
+            <h2>회원 일퀘 기록</h2>
+        </div>
+
+        <div class="summary-box">
+            <table class="goal-table">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>회원</th>
+                    <th>상태</th>
+                    <th>띠</th>
+                    <th>일퀘</th>
+                    <th>포인트</th>
+                    <th>진행 상태</th>
+                    <th>완료일시</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="member : ${memberDailyQuestInfo.members}">
+                    <td th:text="${member.no}">1</td>
+                    <td th:text="${member.memberName}">홍길동</td>
+                    <td th:text="${member.memberStatus}">서비스 중</td>
+                    <td th:text="${member.beltLabel}">흰띠</td>
+                    <td th:text="${member.questName}">일퀘명</td>
+                    <td th:text="${member.point}">100</td>
+                    <td>
+                        <span class="goal-status-badge"
+                              th:classappend="| is-${member.questStatusCode}|"
+                              th:text="${member.questStatus}">
+                            진행
+                        </span>
+                    </td>
+                    <td th:text="${member.completedAt != null ? #temporals.format(member.completedAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                    <td>
+                        <form th:if="${member.completable}"
+                              th:action="@{/gym/{gymId}/member-daily-quest/{memberDailyQuestId}/complete(gymId=${gymId}, memberDailyQuestId=${member.memberDailyQuestId})}"
+                              method="post">
+                            <input type="hidden" name="questDate" th:value="${memberDailyQuestInfo.questDate}">
+                            <button type="submit" class="goal-complete-button">완료</button>
+                        </form>
+                        <span th:if="${!member.completable}">-</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(memberDailyQuestInfo.members)}">
+                    <td colspan="9">회원이 시작한 일퀘 기록이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</th:block>
+</html>

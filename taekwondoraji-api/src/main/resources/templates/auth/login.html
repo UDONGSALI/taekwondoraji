@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link rel="stylesheet" th:href="@{/css/auth/common.css(v='1')}">
+</head>
+<body class="auth-body">
+<main class="auth-shell">
+    <section class="auth-panel">
+        <div class="auth-copy">
+            <span>TAEKWONDORAJI</span>
+            <h1>도장 웹 로그인</h1>
+            <p>테스트 중에는 로그인 아이디만으로 도장 웹에 들어갑니다.</p>
+        </div>
+
+        <form class="auth-form" th:action="@{/login}" th:object="${loginForm}" method="post">
+            <input type="hidden" th:field="*{redirectUri}">
+
+            <p class="auth-success" th:if="${signupMessage}" th:text="${signupMessage}">아이디가 생성되었습니다.</p>
+            <p class="auth-error" th:if="${loginError}" th:text="${loginError}">아이디를 확인해 주세요.</p>
+
+            <label>
+                <span>로그인 아이디</span>
+                <input type="text" th:field="*{loginId}" autocomplete="username" autofocus>
+            </label>
+
+            <button type="submit">로그인</button>
+            <a th:href="@{/signup}">아이디 생성</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

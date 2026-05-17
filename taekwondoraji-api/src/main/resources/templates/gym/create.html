@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도장 만들기</title>
+    <link rel="stylesheet" th:href="@{/css/auth/common.css(v='1')}">
+</head>
+<body class="auth-body">
+<main class="auth-shell">
+    <section class="auth-panel auth-panel-wide">
+        <div class="auth-copy">
+            <span>TAEKWONDORAJI</span>
+            <h1>도장 만들기</h1>
+            <p>새 도장을 만들면 현재 로그인한 계정이 관장으로 연결됩니다.</p>
+        </div>
+
+        <form class="auth-form" th:action="@{/gym/create}" th:object="${gymCreateForm}" method="post">
+            <p class="auth-error" th:if="${createError}" th:text="${createError}">도장 정보를 확인해 주세요.</p>
+
+            <label>
+                <span>도장명</span>
+                <input type="text" th:field="*{gymName}" autofocus>
+            </label>
+
+            <div class="auth-form-grid">
+                <label>
+                    <span>사업자번호</span>
+                    <input type="text" th:field="*{businessNumber}" maxlength="10" placeholder="숫자 10자리">
+                </label>
+
+                <label>
+                    <span>대표자명</span>
+                    <input type="text" th:field="*{ownerName}">
+                </label>
+            </div>
+
+            <div class="auth-form-grid">
+                <label>
+                    <span>연락처</span>
+                    <input type="text" th:field="*{phoneNumber}">
+                </label>
+
+                <label>
+                    <span>지역 코드</span>
+                    <input type="text" th:field="*{regionCode}">
+                </label>
+            </div>
+
+            <label>
+                <span>주소</span>
+                <input type="text" th:field="*{addressRoad}">
+            </label>
+
+            <div class="auth-form-grid">
+                <label>
+                    <span>우편번호</span>
+                    <input type="text" th:field="*{postalCode}">
+                </label>
+
+                <label>
+                    <span>상세 주소</span>
+                    <input type="text" th:field="*{addressDetail}">
+                </label>
+            </div>
+
+            <button type="submit">도장 만들기</button>
+            <a th:href="@{/gym/select}">도장 선택으로 돌아가기</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

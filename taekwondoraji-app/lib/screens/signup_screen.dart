@@ -188,9 +188,9 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('회원가입', style: AppTextStyles.screenTitle),
+                  Text('회원가입', style: AppTextStyles.screenTitle),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     '필수 정보부터 차례대로 입력해 주세요',
                     style: AppTextStyles.subtitle,
                   ),
@@ -319,7 +319,7 @@ class _OptionalSignupFields extends StatelessWidget {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
         const SizedBox(height: 14),
-        const Text(
+        Text(
           '전화번호',
           style: TextStyle(
             color: AppColors.muted,
@@ -387,7 +387,7 @@ class _OptionalSignupFields extends StatelessWidget {
                 onPressed: onOpenAddressSearch,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary),
+                  side: BorderSide(color: AppColors.primary),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -497,7 +497,7 @@ class _AddressSearchLayer extends StatelessWidget {
                 Container(
                   height: 54,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.surface,
                     border: Border(
                       bottom: BorderSide(color: AppColors.border),
@@ -505,7 +505,7 @@ class _AddressSearchLayer extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           '주소 검색',
                           style: TextStyle(
@@ -518,7 +518,7 @@ class _AddressSearchLayer extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: onClose,
-                        icon: const Icon(Icons.close_rounded),
+                        icon: Icon(Icons.close_rounded),
                         color: AppColors.primary,
                         tooltip: '닫기',
                       ),
@@ -617,15 +617,15 @@ InputDecoration _inputDecoration(String label) {
     ),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.border),
+      borderSide: BorderSide(color: AppColors.border),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.border),
+      borderSide: BorderSide(color: AppColors.border),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.primary),
+      borderSide: BorderSide(color: AppColors.primary),
     ),
   );
 }

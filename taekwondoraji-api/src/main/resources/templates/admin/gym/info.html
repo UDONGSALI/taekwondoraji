@@ -78,7 +78,7 @@
             <table class="gym-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>No</th>
                     <th>도장명</th>
                     <th>상태</th>
                     <th>사업자번호</th>
@@ -92,8 +92,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="item : ${gymInfo.list}">
-                    <td th:text="${item.gymId}">1</td>
+                <tr th:each="item, iterStat : ${gymInfo.list}">
+                    <td th:text="${iterStat.count}">1</td>
                     <td>
                         <a class="gym-name-link"
                            th:href="@{/admin/gym/detail/{gymId}(gymId=${item.gymId})}"

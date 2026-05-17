@@ -21,10 +21,10 @@ public class MemberLoginService {
 
     public MemberLoginResponse login(MemberLoginRequest request) {
         MemberInfo memberInfo = memberInfoRepository.findByLoginId(request.loginId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_LOGIN_INFO));
+                .orElseThrow(() -> new BusinessException(ErrorCode.LOGIN_ID_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.loginPassword(), memberInfo.getLoginPassword())) {
-            throw new BusinessException(ErrorCode.INVALID_LOGIN_INFO);
+            throw new BusinessException(ErrorCode.INVALID_LOGIN_PASSWORD);
         }
 
         return MemberLoginResponse.from(memberInfo);

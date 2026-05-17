@@ -1,31 +1,89 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../services/member_api_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import 'daily_quest_screen.dart';
 import 'goal_screen.dart';
+import 'settings_screen.dart';
+import 'store_screen.dart';
 
-class TrainingHomeScreen extends StatelessWidget {
+class TrainingHomeScreen extends StatefulWidget {
   const TrainingHomeScreen({
+    required this.memberId,
     required this.memberGymMapId,
     required this.memberName,
     required this.gymName,
-    required this.beltName,
-    required this.point,
+    required this.beltLabel,
     this.memberAge,
     this.memberPhoneNumber,
+    this.memberMotto,
+    this.memberProfileImageUrl,
     this.joinedDate,
     super.key,
   });
 
+  final int memberId;
   final int? memberGymMapId;
   final String memberName;
   final String gymName;
-  final String beltName;
-  final int point;
+  final String beltLabel;
   final int? memberAge;
   final String? memberPhoneNumber;
+  final String? memberMotto;
+  final String? memberProfileImageUrl;
   final String? joinedDate;
+
+  @override
+  State<TrainingHomeScreen> createState() => _TrainingHomeScreenState();
+}
+
+class _TrainingHomeScreenState extends State<TrainingHomeScreen> {
+  late String _memberName;
+  late int? _memberAge;
+  late String? _memberPhoneNumber;
+  late String? _memberMotto;
+  late String? _memberProfileImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _memberName = widget.memberName;
+    _memberAge = widget.memberAge;
+    _memberPhoneNumber = widget.memberPhoneNumber;
+    _memberMotto = widget.memberMotto;
+    _memberProfileImageUrl = widget.memberProfileImageUrl;
+  }
+
+  Future<void> _openProfileEditModal() async {
+    final result = await showDialog<MemberProfile>(
+      context: context,
+      barrierColor: AppColors.primary.withValues(alpha: 0.38),
+      builder: (context) => _MemberProfileEditDialog(
+        memberId: widget.memberId,
+        memberName: _memberName,
+        memberAge: _memberAge,
+        memberPhoneNumber: _memberPhoneNumber,
+        memberMotto: _memberMotto,
+        memberProfileImageUrl: _memberProfileImageUrl,
+      ),
+    );
+
+    if (result == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _memberName = result.memberName;
+      _memberAge = result.age;
+      _memberPhoneNumber = result.phoneNumber;
+      _memberMotto = result.motto;
+      _memberProfileImageUrl = result.profileImageUrl;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +92,37 @@ class TrainingHomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _AppHeader(gymName: gymName),
+            _AppHeader(
+              gymName: widget.gymName,
+              onEditProfile: _openProfileEditModal,
+            ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _TrainingProfileCard(
-                      memberName: memberName,
-                      gymName: gymName,
-                      beltName: beltName,
-                      point: point,
-                      memberAge: memberAge,
-                      memberPhoneNumber: memberPhoneNumber,
-                      joinedDate: joinedDate,
+                      memberName: _memberName,
+                      gymName: widget.gymName,
+                      beltLabel: widget.beltLabel,
+                      memberAge: _memberAge,
+                      memberPhoneNumber: _memberPhoneNumber,
+                      memberMotto: _memberMotto,
+                      memberProfileImageUrl: _memberProfileImageUrl,
+                      joinedDate: widget.joinedDate,
                     ),
                     const SizedBox(height: 16),
-                    _GoalLevelSection(memberGymMapId: memberGymMapId),
+                    _GoalLevelSection(memberGymMapId: widget.memberGymMapId),
                     const SizedBox(height: 16),
-                    _AttendanceSection(memberGymMapId: memberGymMapId),
+                    _AttendanceSection(memberGymMapId: widget.memberGymMapId),
                   ],
                 ),
               ),
             ),
             _BottomNavBar(
-              memberGymMapId: memberGymMapId,
-              gymName: gymName,
+              memberGymMapId: widget.memberGymMapId,
+              gymName: widget.gymName,
             ),
           ],
         ),
@@ -73,19 +135,21 @@ class _TrainingProfileCard extends StatelessWidget {
   const _TrainingProfileCard({
     required this.memberName,
     required this.gymName,
-    required this.beltName,
-    required this.point,
+    required this.beltLabel,
     required this.memberAge,
     required this.memberPhoneNumber,
+    required this.memberMotto,
+    required this.memberProfileImageUrl,
     required this.joinedDate,
   });
 
   final String memberName;
   final String gymName;
-  final String beltName;
-  final int point;
+  final String beltLabel;
   final int? memberAge;
   final String? memberPhoneNumber;
+  final String? memberMotto;
+  final String? memberProfileImageUrl;
   final String? joinedDate;
 
   @override
@@ -94,24 +158,16 @@ class _TrainingProfileCard extends StatelessWidget {
       _ProfileInfo(label: '이름', value: memberName),
       _ProfileInfo(label: '나이', value: memberAge == null ? '미등록' : '${memberAge}세'),
       _ProfileInfo(label: '등록일자', value: _emptyToDefault(joinedDate)),
-      const _ProfileInfo(label: '좌우명', value: '한 걸음씩 강해지는 수련'),
-      _ProfileInfo(label: '띠', value: _beltLabel(beltName)),
+      _ProfileInfo(label: '좌우명', value: _emptyToDefault(memberMotto)),
+      _ProfileInfo(label: '띠', value: beltLabel),
     ];
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x12000000),
-            blurRadius: 18,
-            offset: Offset(0, 8),
-          ),
-        ],
+        color: AppColors.softAccent,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -121,9 +177,16 @@ class _TrainingProfileCard extends StatelessWidget {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _PhotoPlaceholder(width: photoWidth),
+              _PhotoPlaceholder(
+                width: photoWidth,
+                imageUrl: memberProfileImageUrl,
+              ),
               const SizedBox(width: 10),
-              Expanded(child: _InfoList(rows: infoRows)),
+              Expanded(
+                child: _InfoList(
+                  rows: infoRows,
+                ),
+              ),
             ],
           );
         },
@@ -140,22 +203,16 @@ class _TrainingProfileCard extends StatelessWidget {
     return text;
   }
 
-  String _beltLabel(String value) {
-    return switch (value.toLowerCase()) {
-      'white' => '흰띠',
-      'yellow' => '노란띠',
-      'blue' => '파란띠',
-      'red' => '빨간띠',
-      'black' => '검은띠',
-      _ => value,
-    };
-  }
 }
 
 class _PhotoPlaceholder extends StatelessWidget {
-  const _PhotoPlaceholder({required this.width});
+  const _PhotoPlaceholder({
+    required this.width,
+    required this.imageUrl,
+  });
 
   final double width;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -164,34 +221,48 @@ class _PhotoPlaceholder extends StatelessWidget {
       height: 204,
       decoration: BoxDecoration(
         color: AppColors.white,
-        border: Border.all(color: AppColors.border),
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.person_rounded,
-            size: 56,
-            color: AppColors.muted,
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            '사진 영역',
-            style: TextStyle(
-              color: AppColors.muted,
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
+      clipBehavior: Clip.antiAlias,
+      child: imageUrl == null
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person_rounded,
+                  size: 56,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '사진 영역',
+                  style: TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            )
+          : Image.network(
+              imageUrl!,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  Icons.person_rounded,
+                  size: 56,
+                  color: AppColors.primary,
+                );
+              },
             ),
-          ),
-        ],
-      ),
     );
   }
 }
 
 class _InfoList extends StatelessWidget {
-  const _InfoList({required this.rows});
+  const _InfoList({
+    required this.rows,
+  });
 
   final List<_ProfileInfo> rows;
 
@@ -234,10 +305,10 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 9),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         border: showDivider
-            ? const Border(bottom: BorderSide(color: AppColors.softBorder))
+            ? Border(bottom: BorderSide(color: AppColors.softBorder))
             : null,
       ),
       child: Row(
@@ -246,25 +317,20 @@ class _InfoRow extends StatelessWidget {
             width: 62,
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.primary,
+              style: TextStyle(
+                color: AppColors.muted,
                 fontSize: 14,
                 fontWeight: FontWeight.w900,
               ),
             ),
           ),
-          Container(
-            width: 1,
-            height: 16,
-            color: AppColors.border,
-          ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               value,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.text,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
@@ -278,44 +344,363 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
+class _MemberProfileEditDialog extends StatefulWidget {
+  const _MemberProfileEditDialog({
+    required this.memberId,
+    required this.memberName,
+    required this.memberAge,
+    required this.memberPhoneNumber,
+    required this.memberMotto,
+    required this.memberProfileImageUrl,
+  });
+
+  final int memberId;
+  final String memberName;
+  final int? memberAge;
+  final String? memberPhoneNumber;
+  final String? memberMotto;
+  final String? memberProfileImageUrl;
+
+  @override
+  State<_MemberProfileEditDialog> createState() =>
+      _MemberProfileEditDialogState();
+}
+
+class _MemberProfileEditDialogState extends State<_MemberProfileEditDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _nameController;
+  late final TextEditingController _ageController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _mottoController;
+  Uint8List? _selectedImageBytes;
+  String? _selectedImageName;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.memberName);
+    _ageController = TextEditingController(
+      text: widget.memberAge == null ? '' : '${widget.memberAge}',
+    );
+    _phoneController = TextEditingController(
+      text: widget.memberPhoneNumber ?? '',
+    );
+    _mottoController = TextEditingController(text: widget.memberMotto ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    _phoneController.dispose();
+    _mottoController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 86,
+      maxWidth: 1200,
+    );
+    if (image == null) {
+      return;
+    }
+
+    final bytes = await image.readAsBytes();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _selectedImageBytes = bytes;
+      _selectedImageName = image.name;
+    });
+  }
+
+  Future<void> _save() async {
+    if (_saving || !(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    setState(() {
+      _saving = true;
+    });
+
+    try {
+      final api = MemberApiService();
+      var profile = await api.updateMemberProfile(
+        memberId: widget.memberId,
+        memberName: _nameController.text,
+        age: _ageController.text,
+        phoneNumber: _phoneController.text,
+        motto: _mottoController.text,
+      );
+
+      final imageBytes = _selectedImageBytes;
+      if (imageBytes != null) {
+        profile = await api.uploadMemberProfileImage(
+          memberId: widget.memberId,
+          filename: _selectedImageName ?? '${widget.memberId}.jpg',
+          bytes: imageBytes,
+        );
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      Navigator.of(context).pop(profile);
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
+      );
+      setState(() {
+        _saving = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.surface,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 22),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text('내 정보 수정', style: AppTextStyles.cardTitle),
+                  ),
+                  IconButton(
+                    onPressed: _saving ? null : () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.close_rounded, color: AppColors.primary),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Center(
+                child: _ProfileImagePickerPreview(
+                  imageUrl: widget.memberProfileImageUrl,
+                  selectedImageBytes: _selectedImageBytes,
+                  onPickImage: _saving ? null : _pickImage,
+                ),
+              ),
+              const SizedBox(height: 18),
+              _ProfileTextField(
+                controller: _nameController,
+                label: '이름',
+                validator: (value) {
+                  final text = value?.trim() ?? '';
+                  if (text.isEmpty) {
+                    return '이름을 입력해 주세요.';
+                  }
+                  if (text.length > 50) {
+                    return '50자 이하로 입력해 주세요.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              _ProfileTextField(
+                controller: _ageController,
+                label: '나이',
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 10),
+              _ProfileTextField(
+                controller: _phoneController,
+                label: '전화번호',
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 10),
+              _ProfileTextField(
+                controller: _mottoController,
+                label: '좌우명',
+                maxLength: 100,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _save,
+                  child: _saving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('저장'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileImagePickerPreview extends StatelessWidget {
+  const _ProfileImagePickerPreview({
+    required this.imageUrl,
+    required this.selectedImageBytes,
+    required this.onPickImage,
+  });
+
+  final String? imageUrl;
+  final Uint8List? selectedImageBytes;
+  final VoidCallback? onPickImage;
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedBytes = selectedImageBytes;
+
+    return InkWell(
+      onTap: onPickImage,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        width: 128,
+        height: 128,
+        decoration: BoxDecoration(
+          color: AppColors.softAccent,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (selectedBytes != null)
+              Image.memory(selectedBytes, fit: BoxFit.cover)
+            else if (imageUrl != null)
+              Image.network(imageUrl!, fit: BoxFit.cover)
+            else
+              Icon(Icons.person_rounded, size: 54, color: AppColors.primary),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                color: AppColors.primary.withValues(alpha: 0.82),
+                child: Text(
+                  '사진 선택',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileTextField extends StatelessWidget {
+  const _ProfileTextField({
+    required this.controller,
+    required this.label,
+    this.keyboardType,
+    this.maxLength,
+    this.validator,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final TextInputType? keyboardType;
+  final int? maxLength;
+  final FormFieldValidator<String>? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLength: maxLength,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        counterText: '',
+        filled: true,
+        fillColor: AppColors.softAccent,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.primary, width: 1.2),
+        ),
+      ),
+    );
+  }
+}
+
 class _AppHeader extends StatelessWidget {
-  const _AppHeader({required this.gymName});
+  const _AppHeader({
+    required this.gymName,
+    required this.onEditProfile,
+  });
 
   final String gymName;
+  final VoidCallback onEditProfile;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
       color: AppColors.background,
       child: Row(
         children: [
-          _HeaderIconButton(
-            icon: Icons.menu_rounded,
-            color: AppColors.primary,
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('설정 메뉴 준비 중입니다.')),
-              );
-            },
-          ),
-          const SizedBox(width: 4),
           Expanded(
             child: Text(
               gymName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
+              style: TextStyle(
+                color: AppColors.muted,
+                fontSize: 13,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
+          _HeaderTextButton(
+            label: '내 정보 수정',
+            onPressed: onEditProfile,
+          ),
+          const SizedBox(width: 6),
           _HeaderIconButton(
-            icon: Icons.notifications_rounded,
-            color: Color(0xFFF4B63E),
+            icon: Icons.settings_outlined,
+            color: AppColors.primary,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+            },
+          ),
+          _HeaderIconButton(
+            icon: Icons.notifications_none_rounded,
+            color: AppColors.primary,
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('알림 화면 준비 중입니다.')),
@@ -323,6 +708,37 @@ class _AppHeader extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HeaderTextButton extends StatelessWidget {
+  const _HeaderTextButton({
+    required this.label,
+    required this.onPressed,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        minimumSize: const Size(0, 36),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        foregroundColor: AppColors.primary,
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w900,
+          color: AppColors.primary,
+        ),
       ),
     );
   }
@@ -362,36 +778,21 @@ class _GoalLevelSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final id = memberGymMapId;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x10000000),
-            blurRadius: 12,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: id == null
-          ? _GoalLevelGrid(levels: _defaultGoalLevels)
-          : FutureBuilder<List<GoalLevel>>(
+    return id == null
+        ? _GoalLevelGrid(levels: _defaultGoalLevels)
+        : FutureBuilder<List<GoalLevel>>(
         future: MemberApiService().fetchGoalLevels(id),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const SizedBox(
-              height: 190,
+              height: 70,
               child: Center(child: CircularProgressIndicator()),
             );
           }
 
           if (snapshot.hasError) {
             return const SizedBox(
-              height: 190,
+              height: 70,
               child: Center(child: Text('성장 정보를 불러오지 못했습니다.')),
             );
           }
@@ -399,8 +800,7 @@ class _GoalLevelSection extends StatelessWidget {
           final levels = snapshot.data ?? [];
           return _GoalLevelGrid(levels: levels);
         },
-      ),
-    );
+      );
   }
 }
 
@@ -455,39 +855,39 @@ class _GoalLevelCard extends StatelessWidget {
         level.category == '기초체력' ? '기초 체력' : level.category;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        border: Border.all(color: AppColors.border),
+        color: AppColors.softAccent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              compactCategory,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.primary,
-                fontSize: 13,
-                fontWeight: FontWeight.w900,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  compactCategory,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ),
             ),
           ),
-          Container(
-            width: 1,
-            height: 20,
-            color: AppColors.border,
-          ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 5),
           SizedBox(
-            width: 40,
+            width: 34,
             child: Text(
               'Lv. ${level.level}',
               maxLines: 1,
               textAlign: TextAlign.right,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.text,
                 fontSize: 13,
                 fontWeight: FontWeight.w900,
@@ -571,21 +971,8 @@ class _AttendanceSectionState extends State<_AttendanceSection> {
     const sideWidth = 95.0;
     const gap = 12.0;
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x10000000),
-            blurRadius: 12,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
       child: LayoutBuilder(
         builder: (context, constraints) {
           const maxCalendarWidth = 376.0;
@@ -637,14 +1024,13 @@ class _AttendanceSectionState extends State<_AttendanceSection> {
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             decoration: BoxDecoration(
-                              color: AppColors.white,
-                              border: Border.all(color: AppColors.border),
-                              borderRadius: BorderRadius.circular(14),
+                              color: AppColors.softAccent,
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
                               '${_today.year}년\n${_today.month}월',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.primary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w900,
@@ -669,7 +1055,7 @@ class _AttendanceSectionState extends State<_AttendanceSection> {
                                   foregroundColor: AppColors.white,
                                   disabledForegroundColor: AppColors.primary,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                 ),
                                 child: isLoading
@@ -683,7 +1069,7 @@ class _AttendanceSectionState extends State<_AttendanceSection> {
                                     : Text(
                                         checked ? '출석\n완료' : '출석\n하기',
                                         textAlign: TextAlign.center,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w900,
                                           height: 1.28,
@@ -743,9 +1129,8 @@ class _MiniAttendanceCalendar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(9, 9, 9, 9),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.softAccent,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
@@ -756,7 +1141,7 @@ class _MiniAttendanceCalendar extends StatelessWidget {
                     child: Center(
                       child: Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.muted,
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
@@ -917,10 +1302,10 @@ class _BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 18),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.border)),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 22),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border(top: BorderSide(color: AppColors.softBorder)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -940,8 +1325,34 @@ class _BottomNavBar extends StatelessWidget {
               );
             },
           ),
-          const _NavItem(icon: Icons.list_alt_rounded, label: '일퀘'),
-          const _NavItem(icon: Icons.shopping_bag_outlined, label: '상점'),
+          _NavItem(
+            icon: Icons.list_alt_rounded,
+            label: '일퀘',
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => DailyQuestScreen(
+                    memberGymMapId: memberGymMapId,
+                    gymName: gymName,
+                  ),
+                ),
+              );
+            },
+          ),
+          _NavItem(
+            icon: Icons.shopping_bag_outlined,
+            label: '상점',
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => StoreScreen(
+                    memberGymMapId: memberGymMapId,
+                    gymName: gymName,
+                  ),
+                ),
+              );
+            },
+          ),
           const _NavItem(icon: Icons.emoji_events_outlined, label: '랭킹'),
         ],
       ),
@@ -964,27 +1375,31 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? AppColors.primary : AppColors.muted;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 25),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+    return Semantics(
+      label: label,
+      selected: active,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          width: 54,
+          height: 48,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              width: 42,
+              height: 36,
+              decoration: BoxDecoration(
+                color: active ? AppColors.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: active ? AppColors.white : AppColors.primary,
+                size: active ? 25 : 28,
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

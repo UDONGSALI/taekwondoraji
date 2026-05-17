@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{gym/fragments/layout :: layout('회원 관리', 'memberinfo', ${gymId}, ~{::memberInfoContent})}">
+<th:block th:fragment="memberInfoContent">
+    <link rel="stylesheet" th:href="@{/css/admin/member/common.css(v='1')}">
+    <script th:src="@{/js/gym/member/info.js(v='1')}" defer></script>
+
+    <section class="content-panel page-intro-panel">
+        <div class="member-info-overview">
+            <div class="member-info-intro">
+                <div class="panel-header">
+                    <h2>회원 관리</h2>
+                </div>
+
+                <div class="hero-copy">
+                    <p>현재 도장에 소속된 회원을 확인하고 관리합니다.</p>
+                </div>
+            </div>
+
+            <div class="member-info-summary-grid">
+                <article class="info-card info-card-compact">
+                    <h3>전체</h3>
+                    <p th:text="${memberInfo.summary.totalCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>대기</h3>
+                    <p th:text="${memberInfo.summary.waitCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>서비스 중</h3>
+                    <p th:text="${memberInfo.summary.activeCount}">0</p>
+                </article>
+
+                <article class="info-card info-card-compact">
+                    <h3>정지</h3>
+                    <p th:text="${memberInfo.summary.stopCount}">0</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header panel-header-row">
+            <div>
+                <h2>회원 목록</h2>
+            </div>
+
+            <form class="table-filter-form"
+                  th:action="@{/gym/{gymId}/member/info(gymId=${gymId})}"
+                  th:object="${param}"
+                  method="get">
+                <select th:field="*{memberRole}">
+                    <option value="">역할 전체</option>
+                    <option th:each="role : ${memberRoles}"
+                            th:value="${role.name()}"
+                            th:text="${role.label}">
+                        역할
+                    </option>
+                </select>
+
+                <select th:field="*{memberStatus}">
+                    <option value="">상태 전체</option>
+                    <option th:each="status : ${memberStatuses}"
+                            th:value="${status.name()}"
+                            th:text="${status.label}">
+                        상태
+                    </option>
+                </select>
+
+                <button type="submit">검색</button>
+                <a th:href="@{/gym/{gymId}/member/info(gymId=${gymId})}" class="filter-reset">초기화</a>
+            </form>
+        </div>
+
+        <div class="summary-box">
+            <table class="member-table" data-gym-member-table th:attr="data-gym-id=${gymId}">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>이름</th>
+                    <th>연락처</th>
+                    <th>역할</th>
+                    <th>띠</th>
+                    <th>포인트</th>
+                    <th>상태</th>
+                    <th>등록일시</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, itemStat : ${memberInfo.list}">
+                    <td th:text="${itemStat.count}">1</td>
+                    <td>
+                        <button type="button"
+                                class="member-history-link"
+                                data-detail-trigger
+                                th:attr="data-member-gym-map-id=${item.memberGymMapId},data-member-name=${item.memberName}"
+                                th:text="${item.memberName}">
+                            홍길동
+                        </button>
+                    </td>
+                    <td th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</td>
+                    <td th:text="${item.memberRole}">회원</td>
+                    <td>
+                        <button type="button"
+                                class="member-history-link"
+                                data-history-trigger
+                                data-history-type="belt"
+                                th:attr="data-member-gym-map-id=${item.memberGymMapId},data-member-name=${item.memberName},data-current-belt-name=${item.beltName}"
+                                th:text="${item.beltLabel}">
+                            흰띠
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button"
+                                class="member-history-link"
+                                data-history-trigger
+                                data-history-type="point"
+                                th:attr="data-member-gym-map-id=${item.memberGymMapId},data-member-name=${item.memberName}"
+                                th:text="${item.point + 'P'}">
+                            0P
+                        </button>
+                    </td>
+                    <td data-list-status-label
+                        th:attr="data-member-gym-map-id=${item.memberGymMapId}"
+                        th:text="${item.memberStatus}">
+                        상태
+                    </td>
+                    <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-12 00:42</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(memberInfo.list)}">
+                    <td colspan="8">조회된 회원 정보가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="member-history-modal" data-history-modal hidden>
+        <div class="member-history-backdrop" data-history-close></div>
+        <section class="member-history-dialog" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+            <div class="member-history-header">
+                <h3 id="historyModalTitle" data-history-title>이력</h3>
+                <button type="button" class="member-history-close" data-history-close aria-label="닫기">×</button>
+            </div>
+            <div class="member-history-body" data-history-body>
+                <p class="member-history-empty">이력을 불러오는 중입니다.</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="member-history-modal" data-detail-modal hidden>
+        <div class="member-history-backdrop" data-detail-close></div>
+        <section class="member-history-dialog" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+            <div class="member-history-header">
+                <h3 id="detailModalTitle" data-detail-title>회원 상세</h3>
+                <button type="button" class="member-history-close" data-detail-close aria-label="닫기">×</button>
+            </div>
+            <div class="member-history-body">
+                <div class="member-detail-grid" data-detail-body>
+                    <p class="member-history-empty">회원 정보를 불러오는 중입니다.</p>
+                </div>
+                <select data-belt-option-source hidden>
+                    <option th:each="belt : ${beltOptions}"
+                            th:value="${belt.value}"
+                            th:text="${belt.label}">
+                        흰띠
+                    </option>
+                </select>
+                <select data-status-option-source hidden>
+                    <option th:each="status : ${memberStatuses}"
+                            th:value="${status.name()}"
+                            th:text="${status.label}">
+                        상태
+                    </option>
+                </select>
+            </div>
+        </section>
+    </div>
+</th:block>
+</html>

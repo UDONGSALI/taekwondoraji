@@ -28,7 +28,7 @@ class GymMenuScreen extends StatelessWidget {
             children: [
               Text('$memberName님', style: AppTextStyles.screenTitle),
               const SizedBox(height: 8),
-              const Text('오늘의 수련을 시작해볼까요?', style: AppTextStyles.subtitle),
+              Text('오늘의 수련을 시작해볼까요?', style: AppTextStyles.subtitle),
               const SizedBox(height: 28),
               _TodayGymCard(onPressed: () => _showMyGymModal(context)),
               const SizedBox(height: 18),
@@ -114,7 +114,7 @@ class _TodayGymCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -182,7 +182,7 @@ class _SecondaryMenuButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           backgroundColor: AppColors.surface,
-          side: const BorderSide(color: AppColors.border),
+          side: BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
         child: Text(label, style: AppTextStyles.button),
@@ -216,16 +216,16 @@ class _MyGymDialog extends StatelessWidget {
                 future: MemberApiService().fetchMyGyms(memberId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
-                    return const Center(child: Text('도장 목록을 불러오지 못했습니다.'));
+                    return Center(child: Text('도장 목록을 불러오지 못했습니다.'));
                   }
 
                   final gyms = snapshot.data ?? [];
                   if (gyms.isEmpty) {
-                    return const Center(child: Text('소속된 도장이 없습니다.'));
+                    return Center(child: Text('소속된 도장이 없습니다.'));
                   }
 
                   return ListView.separated(
@@ -242,13 +242,18 @@ class _MyGymDialog extends StatelessWidget {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => TrainingHomeScreen(
+                                memberId: memberId,
                                 memberGymMapId: gym.memberGymMapId,
-                                memberName: memberName,
+                                memberName: gym.memberName.isEmpty
+                                    ? memberName
+                                    : gym.memberName,
                                 gymName: gym.gymName,
-                                beltName: gym.beltName,
-                                point: gym.point,
+                                beltLabel: gym.beltLabel,
                                 memberAge: gym.memberAge,
                                 memberPhoneNumber: gym.memberPhoneNumber,
+                                memberMotto: gym.memberMotto,
+                                memberProfileImageUrl:
+                                    gym.memberProfileImageUrl,
                                 joinedDate: gym.joinedDate,
                               ),
                             ),
@@ -278,17 +283,12 @@ class _MyGymTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final memberRoleLabel = switch (gym.memberRole.toLowerCase()) {
-      'master' => '관장',
-      'teacher' => '사범',
-      _ => '관원',
-    };
     final memberStatusLabel = switch (gym.memberStatus.toLowerCase()) {
       'active' => '서비스 중',
       'stop' => '중지',
       _ => '대기',
     };
-    final beltLabel = _beltLabel(gym.beltName);
+    final canEnter = gym.memberStatus.toLowerCase() == 'active';
     final address = [
       gym.addressRoad,
       gym.addressDetail,
@@ -310,40 +310,23 @@ class _MyGymTile extends StatelessWidget {
             Text(address, style: AppTextStyles.body),
           ],
           const SizedBox(height: 10),
-          Text(
-            '권한 $memberRoleLabel · 상태 $memberStatusLabel',
-            style: const TextStyle(color: AppColors.muted, fontSize: 13),
-          ),
-          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
                 child: Text(
-                  '$beltLabel · ${gym.point}P',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  '상태 : $memberStatusLabel',
+                  style: TextStyle(color: AppColors.muted, fontSize: 13),
                 ),
               ),
-              TextButton(onPressed: onEnter, child: const Text('들어가기')),
+              TextButton(
+                onPressed: canEnter ? onEnter : null,
+                child: const Text('들어가기'),
+              ),
             ],
           ),
         ],
       ),
     );
-  }
-
-  String _beltLabel(String beltName) {
-    return switch (beltName.toLowerCase()) {
-      'white' => '흰띠',
-      'yellow' => '노란띠',
-      'blue' => '파란띠',
-      'red' => '빨간띠',
-      'black' => '검은띠',
-      _ => beltName,
-    };
   }
 }
 
@@ -411,7 +394,7 @@ class _DialogHeader extends StatelessWidget {
     return Container(
       height: 58,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: Row(
@@ -419,7 +402,7 @@ class _DialogHeader extends StatelessWidget {
           Expanded(child: Text(title, style: AppTextStyles.cardTitle)),
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.close_rounded),
+            icon: Icon(Icons.close_rounded),
             color: AppColors.primary,
           ),
         ],
