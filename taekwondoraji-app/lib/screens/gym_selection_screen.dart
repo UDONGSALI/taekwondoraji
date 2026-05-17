@@ -76,7 +76,7 @@ class _GymSelectionViewState extends State<GymSelectionView> {
                   focusedBorder: _inputBorder(AppColors.primary),
                 ),
                 dropdownColor: AppColors.surface,
-                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                icon: Icon(Icons.keyboard_arrow_down_rounded),
                 items: [
                   const DropdownMenuItem<String>(
                     value: _allRegionCode,
@@ -103,16 +103,16 @@ class _GymSelectionViewState extends State<GymSelectionView> {
               future: _gymsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(child: CircularProgressIndicator());
                 }
 
                 if (snapshot.hasError) {
-                  return const Center(child: Text('도장 목록을 불러오지 못했습니다.'));
+                  return Center(child: Text('도장 목록을 불러오지 못했습니다.'));
                 }
 
                 final gyms = snapshot.data ?? [];
                 if (gyms.isEmpty) {
-                  return const Center(child: Text('선택한 지역에 도장이 없어요'));
+                  return Center(child: Text('선택한 지역에 도장이 없어요'));
                 }
 
                 return ListView.separated(
@@ -175,7 +175,7 @@ class _GymListTile extends StatelessWidget {
                   gym.gymName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.text,
                     fontSize: 17,
                     fontWeight: FontWeight.w800,

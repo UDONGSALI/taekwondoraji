@@ -61,6 +61,17 @@ public class MemberGymMap extends BaseEntity {
         return memberGymMap;
     }
 
+    public static MemberGymMap createManager(MemberInfo memberInfo, GymInfo gym) {
+        MemberGymMap memberGymMap = new MemberGymMap();
+        memberGymMap.memberInfo = memberInfo;
+        memberGymMap.gym = gym;
+        memberGymMap.memberRole = MemberRole.master;
+        memberGymMap.memberStatus = MemberStatus.active;
+        memberGymMap.beltName = "white";
+        memberGymMap.point = 0;
+        return memberGymMap;
+    }
+
     public void updateMemberStatus(MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
     }
@@ -71,5 +82,11 @@ public class MemberGymMap extends BaseEntity {
 
     public void updatePoint(Integer point) {
         this.point = point;
+    }
+
+    public void addPoint(Integer point) {
+        int currentPoint = this.point == null ? 0 : this.point;
+        int additionalPoint = point == null ? 0 : point;
+        this.point = currentPoint + additionalPoint;
     }
 }

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{gym/fragments/layout :: layout('회원 목표 관리', 'membergoalinfo', ${gymId}, ~{::memberGoalInfoContent})}">
+<th:block th:fragment="memberGoalInfoContent">
+    <link rel="stylesheet" th:href="@{/css/admin/goal/common.css(v='3')}">
+    <script th:src="@{/js/gym/member-goal/info.js(v='1')}" defer></script>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header panel-header-row">
+            <div>
+                <h2>회원 목표 목록</h2>
+            </div>
+
+            <form class="table-filter-form"
+                  th:action="@{/gym/{gymId}/member-goal/info(gymId=${gymId})}"
+                  th:object="${param}"
+                  method="get">
+                <select th:field="*{goalStatus}">
+                    <option value="">상태 전체</option>
+                    <option th:each="status : ${goalStatuses}"
+                            th:value="${status.name()}"
+                            th:text="${status.label}">
+                        상태
+                    </option>
+                </select>
+
+                <select th:field="*{category}">
+                    <option value="">카테고리 전체</option>
+                    <option th:each="category : ${goalCategories}"
+                            th:value="${category.value}"
+                            th:text="${category.value}">
+                        카테고리
+                    </option>
+                </select>
+
+                <select th:field="*{memberId}">
+                    <option value="">회원 전체</option>
+                    <option th:each="member : ${memberOptions}"
+                            th:value="${member.value}"
+                            th:text="${member.label}">
+                        회원
+                    </option>
+                </select>
+
+                <button type="submit">검색</button>
+                <a th:href="@{/gym/{gymId}/member-goal/info(gymId=${gymId})}" class="filter-reset">초기화</a>
+            </form>
+        </div>
+
+        <div class="summary-box">
+            <table class="goal-table" data-member-goal-table th:attr="data-gym-id=${gymId}">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>회원</th>
+                    <th>역할</th>
+                    <th>목표</th>
+                    <th>카테고리</th>
+                    <th>포인트</th>
+                    <th>상태</th>
+                    <th>완료일시</th>
+                    <th>
+                        <div class="goal-manage-header">
+                            <span>관리</span>
+                            <button type="button" class="goal-bulk-complete-button" data-bulk-complete-member-goals>
+                                일괄완료
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, iterStat : ${memberGoalInfo.list}"
+                    th:attr="data-member-goal-row=${item.memberGoalId}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${item.memberName}">홍길동</td>
+                    <td th:text="${item.memberRole}">관원</td>
+                    <td th:text="${item.goalName}">목표명</td>
+                    <td th:text="${item.category}">기초체력</td>
+                    <td th:text="${item.point}">100</td>
+                    <td>
+                        <span class="goal-status-badge"
+                              th:classappend="| is-${item.goalStatusCode}|"
+                              th:text="${item.goalStatus}">
+                            신청
+                        </span>
+                    </td>
+                    <td th:text="${item.completedAt != null ? #temporals.format(item.completedAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                    <td>
+                        <button th:if="${item.completable}"
+                                type="button"
+                                class="goal-complete-button"
+                                data-complete-member-goal
+                                th:attr="data-member-goal-id=${item.memberGoalId}">
+                            완료
+                        </button>
+                        <span th:if="${!item.completable}">-</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(memberGoalInfo.list)}">
+                    <td colspan="9">조회된 회원 목표가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</th:block>
+</html>

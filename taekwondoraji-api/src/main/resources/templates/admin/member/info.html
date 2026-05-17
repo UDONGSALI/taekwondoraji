@@ -74,7 +74,7 @@
             <table class="member-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>No</th>
                     <th>이름</th>
                     <th>로그인 ID</th>
                     <th>연락처</th>
@@ -85,8 +85,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="item : ${memberInfo.list}">
-                    <td th:text="${item.memberId}">1</td>
+                <tr th:each="item, iterStat : ${memberInfo.list}">
+                    <td th:text="${iterStat.count}">1</td>
                     <td th:text="${item.memberName}">홍길동</td>
                     <td th:text="${item.loginId}">hong</td>
                     <td th:text="${item.phoneNumber != null and !#strings.isEmpty(item.phoneNumber) ? item.phoneNumber : '-'}">010-0000-0000</td>

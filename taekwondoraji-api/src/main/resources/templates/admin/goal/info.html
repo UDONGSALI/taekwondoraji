@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/fragments/layout :: layout('목표 관리', 'goalinfo', ~{::goalInfoContent})}">
 <th:block th:fragment="goalInfoContent">
-    <link rel="stylesheet" th:href="@{/css/admin/goal/common.css(v='2')}">
+    <link rel="stylesheet" th:href="@{/css/admin/goal/common.css(v='4')}">
 
     <script th:if="${toastMessage != null}" th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
@@ -75,21 +75,21 @@
                     <small class="goal-field-error" th:if="${#fields.hasErrors('point')}" th:errors="*{point}">오류</small>
                 </label>
 
-                <label class="goal-field goal-field-wide">
+                <label class="goal-field goal-field-description">
                     <span>목표 설명</span>
                     <input type="text" th:field="*{description}" placeholder="목표 설명">
                     <small class="goal-field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">오류</small>
                 </label>
 
-                <label class="goal-field goal-field-wide">
+                <label class="goal-field goal-field-link">
                     <span>설명 링크</span>
                     <input type="text" th:field="*{link}" placeholder="https://example.com">
                     <small class="goal-field-error" th:if="${#fields.hasErrors('link')}" th:errors="*{link}">오류</small>
                 </label>
-            </div>
 
-            <div class="goal-create-actions">
-                <button type="submit">입력</button>
+                <div class="goal-field-action">
+                    <button type="submit">입력</button>
+                </div>
             </div>
         </form>
     </section>
@@ -103,7 +103,7 @@
             <table class="goal-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>No</th>
                     <th>이름</th>
                     <th>카테고리</th>
                     <th>포인트</th>
@@ -115,8 +115,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="item : ${goalInfo.list}">
-                    <td th:text="${item.goalId}">1</td>
+                <tr th:each="item, iterStat : ${goalInfo.list}">
+                    <td th:text="${iterStat.count}">1</td>
                     <td th:text="${item.name}">목표명</td>
                     <td th:text="${item.category}">품새</td>
                     <td th:text="${item.point}">100</td>

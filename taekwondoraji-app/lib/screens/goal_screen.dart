@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../services/member_api_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import 'daily_quest_screen.dart';
+import 'store_screen.dart';
 
 class GoalScreen extends StatefulWidget {
   const GoalScreen({
@@ -21,6 +23,7 @@ class GoalScreen extends StatefulWidget {
 class _GoalScreenState extends State<GoalScreen> {
   String _selectedCategory = '기초체력';
   String _selectedStatus = 'waiting';
+  final Set<String> _hiddenGoalKeys = {};
   Future<List<GoalLevel>>? _goalLevelsFuture;
   Future<List<GoalItem>>? _goalsFuture;
 
@@ -45,8 +48,30 @@ class _GoalScreenState extends State<GoalScreen> {
         : MemberApiService().fetchMemberGoals(memberGymMapId);
   }
 
-  void _refreshGoals() {
+  void _hideGoal(GoalItem goal) {
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
+      _hiddenGoalKeys.add(_goalVisibilityKey(goal));
+    });
+  }
+
+  void _showGoal(GoalItem goal) {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _hiddenGoalKeys.remove(_goalVisibilityKey(goal));
+    });
+  }
+
+  void _changeStatus(String status) {
+    setState(() {
+      _selectedStatus = status;
+      _hiddenGoalKeys.clear();
       _goalsFuture = _createGoalsFuture();
     });
   }
@@ -58,10 +83,10 @@ class _GoalScreenState extends State<GoalScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _GoalHeader(gymName: widget.gymName),
+            const _GoalHeader(),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 14),
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 14),
                 child: Column(
                   children: [
                     _GoalCategorySection(
@@ -77,11 +102,7 @@ class _GoalScreenState extends State<GoalScreen> {
                     const SizedBox(height: 16),
                     _GoalStatusTabs(
                       selectedStatus: _selectedStatus,
-                      onSelected: (status) {
-                        setState(() {
-                          _selectedStatus = status;
-                        });
-                      },
+                      onSelected: _changeStatus,
                     ),
                     const SizedBox(height: 12),
                     Expanded(
@@ -90,7 +111,9 @@ class _GoalScreenState extends State<GoalScreen> {
                         goalsFuture: _goalsFuture ??= _createGoalsFuture(),
                         category: _selectedCategory,
                         status: _selectedStatus,
-                        onApplied: _refreshGoals,
+                        hiddenGoalKeys: _hiddenGoalKeys,
+                        onDismissed: _hideGoal,
+                        onDismissFailed: _showGoal,
                       ),
                     ),
                   ],
@@ -109,48 +132,20 @@ class _GoalScreenState extends State<GoalScreen> {
 }
 
 class _GoalHeader extends StatelessWidget {
-  const _GoalHeader({required this.gymName});
-
-  final String gymName;
+  const _GoalHeader();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(24, 22, 24, 10),
       color: AppColors.background,
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              padding: EdgeInsets.zero,
-              icon: const Icon(
-                Icons.arrow_back_rounded,
-                size: 22,
-                color: AppColors.primary,
-              ),
-            ),
-          ),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              gymName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          const Icon(
-            Icons.notifications_rounded,
-            color: Color(0xFFF4B63E),
-            size: 22,
+          Text(
+            '목표',
+            style: AppTextStyles.screenTitle.copyWith(fontSize: 42),
           ),
         ],
       ),
@@ -171,45 +166,29 @@ class _GoalCategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x10000000),
-            blurRadius: 12,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: FutureBuilder<List<GoalLevel>>(
-        future: goalLevelsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const SizedBox(
-              height: 110,
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return const SizedBox(
-              height: 110,
-              child: Center(child: Text('성장 정보를 불러오지 못했습니다.')),
-            );
-          }
-
-          return _GoalCategoryGrid(
-            levels: snapshot.data ?? _defaultGoalLevels,
-            selectedCategory: selectedCategory,
-            onSelected: onSelected,
+    return FutureBuilder<List<GoalLevel>>(
+      future: goalLevelsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const SizedBox(
+            height: 70,
+            child: Center(child: CircularProgressIndicator()),
           );
-        },
-      ),
+        }
+
+        if (snapshot.hasError) {
+          return const SizedBox(
+            height: 70,
+            child: Center(child: Text('성장 정보를 불러오지 못했습니다.')),
+          );
+        }
+
+        return _GoalCategoryGrid(
+          levels: snapshot.data ?? _defaultGoalLevels,
+          selectedCategory: selectedCategory,
+          onSelected: onSelected,
+        );
+      },
     );
   }
 }
@@ -249,7 +228,7 @@ class _GoalCategoryGrid extends StatelessWidget {
               .map(
                 (level) => SizedBox(
                   width: itemWidth,
-                  height: 45,
+                  height: 48,
                   child: _GoalCategoryCard(
                     level: level,
                     selected: selectedCategory == level.category,
@@ -281,50 +260,63 @@ class _GoalCategoryCard extends StatelessWidget {
         level.category == '기초체력' ? '기초 체력' : level.category;
 
     return Material(
-      color: selected ? AppColors.primary : AppColors.white,
+      color: selected ? AppColors.primary : AppColors.softAccent,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: selected ? AppColors.primary : AppColors.border,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  compactCategory,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: selected ? AppColors.white : AppColors.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      compactCategory,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: selected ? AppColors.white : AppColors.primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              Container(
-                width: 1,
-                height: 20,
-                color: selected ? AppColors.white : AppColors.border,
-              ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 5),
               SizedBox(
-                width: 40,
-                child: Text(
-                  'Lv. ${level.level}',
-                  maxLines: 1,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: selected ? AppColors.white : AppColors.text,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                  ),
+                width: 42,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Lv. ${level.level}',
+                      maxLines: 1,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: selected ? AppColors.white : AppColors.text,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${level.point}P',
+                      maxLines: 1,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: selected ? AppColors.white : AppColors.muted,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -341,14 +333,18 @@ class _GoalListSection extends StatelessWidget {
     required this.goalsFuture,
     required this.category,
     required this.status,
-    required this.onApplied,
+    required this.hiddenGoalKeys,
+    required this.onDismissed,
+    required this.onDismissFailed,
   });
 
   final int? memberGymMapId;
   final Future<List<GoalItem>> goalsFuture;
   final String category;
   final String status;
-  final VoidCallback onApplied;
+  final Set<String> hiddenGoalKeys;
+  final ValueChanged<GoalItem> onDismissed;
+  final ValueChanged<GoalItem> onDismissFailed;
 
   @override
   Widget build(BuildContext context) {
@@ -372,17 +368,17 @@ class _GoalListSection extends StatelessWidget {
         final goals = (snapshot.data ?? [])
             .where((goal) => goal.category == category)
             .where((goal) => goal.goalStatus == status)
+            .where((goal) => !hiddenGoalKeys.contains(_goalVisibilityKey(goal)))
             .toList();
         if (goals.isEmpty) {
           return Container(
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: AppColors.surface,
-              border: Border.all(color: AppColors.border),
-              borderRadius: BorderRadius.circular(18),
+              color: AppColors.softAccent,
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: const Center(child: Text('등록된 목표가 없습니다.')),
+            child: Center(child: Text('등록된 목표가 없습니다.')),
           );
         }
 
@@ -396,9 +392,13 @@ class _GoalListSection extends StatelessWidget {
                 itemCount: goals.length,
                 itemBuilder: (context, index) {
                   return _GoalListTile(
+                    key: ValueKey(
+                      '${goals[index].goalStatus}-${goals[index].memberGoalId ?? goals[index].goalId}',
+                    ),
                     goal: goals[index],
                     memberGymMapId: memberGymMapId,
-                    onApplied: onApplied,
+                    onDismissed: onDismissed,
+                    onDismissFailed: onDismissFailed,
                   );
                 },
               ),
@@ -408,6 +408,10 @@ class _GoalListSection extends StatelessWidget {
       },
     );
   }
+}
+
+String _goalVisibilityKey(GoalItem goal) {
+  return '${goal.goalStatus}-${goal.goalId}';
 }
 
 class _GoalStatusTabs extends StatelessWidget {
@@ -430,9 +434,8 @@ class _GoalStatusTabs extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.softAccent,
+        borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
         children: _statuses.map((item) {
@@ -448,12 +451,12 @@ class _GoalStatusTabs extends StatelessWidget {
                   backgroundColor:
                       selected ? AppColors.primary : Colors.transparent,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                 ),
                 child: Text(
                   item.label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w900,
                   ),
@@ -477,111 +480,177 @@ class _GoalStatusTab {
   final String label;
 }
 
-class _GoalListTile extends StatelessWidget {
+class _GoalListTile extends StatefulWidget {
   const _GoalListTile({
     required this.goal,
     required this.memberGymMapId,
-    required this.onApplied,
+    required this.onDismissed,
+    required this.onDismissFailed,
+    super.key,
   });
 
   final GoalItem goal;
   final int? memberGymMapId;
-  final VoidCallback onApplied;
+  final ValueChanged<GoalItem> onDismissed;
+  final ValueChanged<GoalItem> onDismissFailed;
+
+  @override
+  State<_GoalListTile> createState() => _GoalListTileState();
+}
+
+class _GoalListTileState extends State<_GoalListTile> {
+  static const _leaveDuration = Duration(milliseconds: 280);
+
+  bool _isLeaving = false;
+  Offset _leaveOffset = const Offset(1.15, 0);
+
+  GoalItem get goal => widget.goal;
+  int? get memberGymMapId => widget.memberGymMapId;
+  ValueChanged<GoalItem> get onDismissed => widget.onDismissed;
+  ValueChanged<GoalItem> get onDismissFailed => widget.onDismissFailed;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 1, end: _isLeaving ? 0 : 1),
+      duration: _leaveDuration,
+      curve: Curves.easeInOutCubic,
+      builder: (context, heightFactor, child) {
+        return ClipRect(
+          child: Align(
+            heightFactor: heightFactor,
+            alignment: Alignment.topCenter,
+            child: child,
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        );
+      },
+      child: AnimatedSlide(
+        offset: _isLeaving ? _leaveOffset : Offset.zero,
+        duration: _leaveDuration,
+        curve: Curves.easeInCubic,
+        child: AnimatedOpacity(
+          opacity: _isLeaving ? 0 : 1,
+          duration: _leaveDuration,
+          curve: Curves.easeOut,
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: AppColors.softAccent,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
               children: [
-                Text(goal.name, style: AppTextStyles.cardTitle),
-                if (goal.description != null &&
-                    goal.description!.trim().isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Text(goal.description!, style: AppTextStyles.body),
-                ],
-                if (goal.goalStatus == 'complete' &&
-                    goal.completedAt != null) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    '완료일 ${_formatDate(goal.completedAt!)}',
-                    style: AppTextStyles.body.copyWith(
-                      color: AppColors.muted,
-                      fontWeight: FontWeight.w700,
-                    ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(goal.name, style: AppTextStyles.cardTitle),
+                      if (goal.description != null &&
+                          goal.description!.trim().isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Text(goal.description!, style: AppTextStyles.body),
+                      ],
+                      if (goal.goalStatus == 'complete' &&
+                          goal.completedAt != null) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          '완료일 ${_formatDate(goal.completedAt!)}',
+                          style: AppTextStyles.body.copyWith(
+                            color: AppColors.muted,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.softAccent,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        '${goal.point}P',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    if (goal.goalStatus == 'waiting') ...[
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 34,
+                        child: ElevatedButton(
+                          onPressed:
+                              memberGymMapId == null || _isLeaving
+                              ? null
+                              : _applyGoal,
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 13),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(11),
+                            ),
+                          ),
+                          child: Text(
+                            goal.reapplyAvailable ? '재신청' : '신청',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (goal.goalStatus == 'progress') ...[
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 34,
+                        child: OutlinedButton(
+                          onPressed:
+                              memberGymMapId == null ||
+                                  goal.memberGoalId == null ||
+                                  _isLeaving
+                              ? null
+                              : _cancelGoal,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: BorderSide(color: AppColors.border),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(11),
+                            ),
+                          ),
+                          child: Text(
+                            '신청 취소',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.softAccent,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  '${goal.point}P',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              if (goal.goalStatus == 'waiting') ...[
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 34,
-                  child: ElevatedButton(
-                    onPressed: memberGymMapId == null
-                        ? null
-                        : () => _applyGoal(context),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 13),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(11),
-                      ),
-                    ),
-                    child: Text(
-                      goal.reapplyAvailable ? '재신청' : '신청',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -594,33 +663,54 @@ class _GoalListTile extends StatelessWidget {
     return value.toString().padLeft(2, '0');
   }
 
-  Future<void> _applyGoal(BuildContext context) async {
+  Future<void> _applyGoal() async {
     final id = memberGymMapId;
-    if (id == null) {
+    if (id == null || _isLeaving) {
       return;
     }
 
-    try {
-      await MemberApiService().applyGoal(
+    await _dismissWithRequest(
+      offset: const Offset(1.15, 0),
+      request: MemberApiService()
+          .applyGoal(memberGymMapId: id, goalId: goal.goalId)
+          .then<void>((_) {}),
+    );
+  }
+
+  Future<void> _cancelGoal() async {
+    final id = memberGymMapId;
+    final memberGoalId = goal.memberGoalId;
+    if (id == null || memberGoalId == null || _isLeaving) {
+      return;
+    }
+
+    await _dismissWithRequest(
+      offset: const Offset(-1.15, 0),
+      request: MemberApiService().deleteGoalApplication(
         memberGymMapId: id,
-        goalId: goal.goalId,
-      );
-      onApplied();
-      if (!context.mounted) {
-        return;
-      }
+        memberGoalId: memberGoalId,
+      ),
+    );
+  }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${goal.name} 목표를 신청했습니다.')),
-      );
-    } catch (error) {
-      if (!context.mounted) {
-        return;
-      }
+  Future<void> _dismissWithRequest({
+    required Offset offset,
+    required Future<void> request,
+  }) async {
+    setState(() {
+      _leaveOffset = offset;
+      _isLeaving = true;
+    });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString().replaceFirst('Exception: ', ''))),
-      );
+    await Future<void>.delayed(_leaveDuration);
+    if (mounted) {
+      onDismissed(goal);
+    }
+
+    try {
+      await request;
+    } catch (_) {
+      onDismissFailed(goal);
     }
   }
 }
@@ -637,10 +727,10 @@ class _GoalBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 18),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.border)),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 22),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border(top: BorderSide(color: AppColors.softBorder)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -655,8 +745,34 @@ class _GoalBottomNav extends StatelessWidget {
             label: '목표',
             active: true,
           ),
-          const _NavItem(icon: Icons.list_alt_rounded, label: '일퀘'),
-          const _NavItem(icon: Icons.shopping_bag_outlined, label: '상점'),
+          _NavItem(
+            icon: Icons.list_alt_rounded,
+            label: '일퀘',
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => DailyQuestScreen(
+                    memberGymMapId: memberGymMapId,
+                    gymName: gymName,
+                  ),
+                ),
+              );
+            },
+          ),
+          _NavItem(
+            icon: Icons.shopping_bag_outlined,
+            label: '상점',
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => StoreScreen(
+                    memberGymMapId: memberGymMapId,
+                    gymName: gymName,
+                  ),
+                ),
+              );
+            },
+          ),
           const _NavItem(icon: Icons.emoji_events_outlined, label: '랭킹'),
         ],
       ),
@@ -679,27 +795,31 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? AppColors.primary : AppColors.muted;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 25),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 12,
-                fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+    return Semantics(
+      label: label,
+      selected: active,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          width: 54,
+          height: 48,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              width: 42,
+              height: 36,
+              decoration: BoxDecoration(
+                color: active ? AppColors.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: active ? AppColors.white : AppColors.primary,
+                size: active ? 25 : 28,
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

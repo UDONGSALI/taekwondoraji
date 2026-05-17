@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{gym/fragments/layout :: layout('회원 출석 관리', 'attendanceinfo', ${gymId}, ~{::attendanceInfoContent})}">
+<th:block th:fragment="attendanceInfoContent">
+    <link rel="stylesheet" th:href="@{/css/admin/attendance/common.css(v='1')}">
+    <script th:src="@{/js/gym/attendance/info.js(v='1')}" defer></script>
+
+    <section class="content-panel page-intro-panel">
+        <div class="attendance-info-overview">
+            <div class="attendance-info-intro">
+                <div class="panel-header">
+                    <h2>회원 출석 관리</h2>
+                </div>
+
+                <div class="hero-copy">
+                    <p th:text="|${attendanceInfo.monthLabel} 기준으로 회원별 출석 횟수와 출석율을 확인합니다.|">
+                        선택한 월 기준으로 회원별 출석 횟수와 출석율을 확인합니다.
+                    </p>
+                </div>
+            </div>
+
+            <form class="table-filter-form attendance-month-form"
+                  th:action="@{/gym/{gymId}/attendance/info(gymId=${gymId})}"
+                  method="get">
+                <div class="attendance-month-picker"
+                     data-month-picker
+                     th:attr="data-selected-month=${attendanceInfo.selectedMonth},data-max-month=${attendanceInfo.maxMonth}">
+                    <span>조회 월</span>
+                    <input type="hidden"
+                           name="month"
+                           data-month-value
+                           th:value="${attendanceInfo.selectedMonth}">
+                    <input type="text"
+                           data-month-display
+                           th:value="${attendanceInfo.monthLabel}"
+                           readonly>
+                    <div class="attendance-month-popover" data-month-popover hidden></div>
+                </div>
+                <button type="submit">조회</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="attendance-dashboard">
+        <article class="info-card attendance-stat-card">
+            <h3>회원 수</h3>
+            <p th:text="${attendanceInfo.summary.memberCount}">0</p>
+        </article>
+
+        <article class="info-card attendance-stat-card">
+            <h3>총 출석</h3>
+            <p th:text="|${attendanceInfo.summary.totalAttendanceCount}회|">0회</p>
+        </article>
+
+        <article class="info-card attendance-stat-card">
+            <h3>평균 출석</h3>
+            <p th:text="${attendanceInfo.summary.averageAttendanceLabel}">0회</p>
+        </article>
+
+        <article class="info-card attendance-stat-card">
+            <h3>평균 출석율</h3>
+            <p th:text="${attendanceInfo.summary.averageRateLabel}">0%</p>
+            <span th:text="|${attendanceInfo.summary.attendanceDays}일 기준|">0일 기준</span>
+        </article>
+    </section>
+
+    <section class="attendance-rank-grid">
+        <article class="content-panel attendance-rank-panel">
+            <div class="panel-header">
+                <h2>출석율 베스트 3</h2>
+            </div>
+
+            <ol class="attendance-rank-list" th:if="${!#lists.isEmpty(attendanceInfo.bestList)}">
+                <li th:each="item : ${attendanceInfo.bestList}">
+                    <strong th:text="${item.rank}">1</strong>
+                    <div>
+                        <p th:text="${item.memberName}">홍길동</p>
+                        <span th:text="${item.memberRole}">회원</span>
+                    </div>
+                    <em th:text="|${item.attendanceCount}회 · ${item.attendanceRateLabel}|">0회 · 0%</em>
+                </li>
+            </ol>
+
+            <p class="attendance-empty" th:if="${#lists.isEmpty(attendanceInfo.bestList)}">
+                표시할 회원이 없습니다.
+            </p>
+        </article>
+
+        <article class="content-panel attendance-rank-panel">
+            <div class="panel-header">
+                <h2>출석율 워스트 3</h2>
+            </div>
+
+            <ol class="attendance-rank-list" th:if="${!#lists.isEmpty(attendanceInfo.worstList)}">
+                <li th:each="item : ${attendanceInfo.worstList}">
+                    <strong th:text="${item.rank}">1</strong>
+                    <div>
+                        <p th:text="${item.memberName}">홍길동</p>
+                        <span th:text="${item.memberRole}">회원</span>
+                    </div>
+                    <em th:text="|${item.attendanceCount}회 · ${item.attendanceRateLabel}|">0회 · 0%</em>
+                </li>
+            </ol>
+
+            <p class="attendance-empty" th:if="${#lists.isEmpty(attendanceInfo.worstList)}">
+                표시할 회원이 없습니다.
+            </p>
+        </article>
+    </section>
+
+    <section class="content-panel panel-emphasis">
+        <div class="panel-header panel-header-row">
+            <div>
+                <h2>회원별 출석 현황</h2>
+            </div>
+            <button type="button"
+                    class="attendance-qr-button"
+                    data-attendance-qr-open>
+                출석 QR 표시
+            </button>
+        </div>
+
+        <div class="summary-box">
+            <table class="attendance-table"
+                   data-attendance-table
+                   th:attr="data-gym-id=${gymId},data-selected-month=${attendanceInfo.selectedMonth}">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>이름</th>
+                    <th>역할</th>
+                    <th>상태</th>
+                    <th>띠</th>
+                    <th>출석 횟수</th>
+                    <th>출석율</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${attendanceInfo.list}"
+                    data-attendance-member-row
+                    th:attr="data-member-gym-map-id=${item.memberGymMapId},data-member-name=${item.memberName}">
+                    <td th:text="${item.no}">1</td>
+                    <td th:text="${item.memberName}">홍길동</td>
+                    <td th:text="${item.memberRole}">회원</td>
+                    <td th:text="${item.memberStatus}">서비스 중</td>
+                    <td th:text="${item.beltLabel}">흰띠</td>
+                    <td th:text="|${item.attendanceCount}회|">0회</td>
+                    <td>
+                        <span class="attendance-rate-badge" th:text="${item.attendanceRateLabel}">0%</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(attendanceInfo.list)}">
+                    <td colspan="7">조회된 회원 정보가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="attendance-calendar-modal" data-attendance-modal hidden>
+        <div class="attendance-calendar-backdrop" data-attendance-close></div>
+        <section class="attendance-calendar-dialog"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="attendanceCalendarTitle">
+            <div class="attendance-calendar-header">
+                <div>
+                    <h3 id="attendanceCalendarTitle" data-attendance-modal-title>출석 달력</h3>
+                    <p data-attendance-modal-subtitle></p>
+                </div>
+                <button type="button"
+                        class="attendance-calendar-close"
+                        data-attendance-close
+                        aria-label="닫기">×</button>
+            </div>
+
+            <div class="attendance-calendar-weekdays" aria-hidden="true">
+                <span>일</span>
+                <span>월</span>
+                <span>화</span>
+                <span>수</span>
+                <span>목</span>
+                <span>금</span>
+                <span>토</span>
+            </div>
+            <div class="attendance-calendar-grid" data-attendance-calendar-grid></div>
+        </section>
+    </div>
+
+    <div class="attendance-qr-modal" data-attendance-qr-modal hidden>
+        <div class="attendance-calendar-backdrop" data-attendance-qr-close></div>
+        <section class="attendance-qr-dialog"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="attendanceQrTitle">
+            <div class="attendance-calendar-header">
+                <div>
+                    <h3 id="attendanceQrTitle">오늘의 출석 QR</h3>
+                    <p>앱에서 이 QR을 스캔하면 오늘 출석으로 처리됩니다.</p>
+                </div>
+                <button type="button"
+                        class="attendance-calendar-close"
+                        data-attendance-qr-close
+                        aria-label="닫기">×</button>
+            </div>
+            <div class="attendance-qr-box">
+                <img data-attendance-qr-image
+                     th:attr="data-src=@{/gym/api/{gymId}/attendance/qr.svg(gymId=${gymId})}"
+                     alt="오늘의 출석 QR">
+            </div>
+        </section>
+    </div>
+</th:block>
+</html>

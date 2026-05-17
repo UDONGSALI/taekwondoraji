@@ -46,6 +46,9 @@ public class MemberInfo extends BaseEntity {
     @Column(name = "address_detail", length = 255)
     private String addressDetail;
 
+    @Column(name = "motto", length = 100)
+    private String motto;
+
     public static MemberInfo create(
             String loginId,
             String loginPassword,
@@ -66,5 +69,17 @@ public class MemberInfo extends BaseEntity {
         memberInfo.addressRoad = addressRoad;
         memberInfo.addressDetail = addressDetail;
         return memberInfo;
+    }
+
+    public void updateProfile(
+            String memberName,
+            Integer age,
+            String phoneNumber,
+            String motto
+    ) {
+        this.memberName = memberName;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.motto = motto;
     }
 }

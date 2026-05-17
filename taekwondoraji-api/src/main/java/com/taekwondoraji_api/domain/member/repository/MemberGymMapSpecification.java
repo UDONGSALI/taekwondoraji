@@ -23,4 +23,11 @@ public final class MemberGymMapSpecification {
                         ? criteriaBuilder.conjunction()
                         : criteriaBuilder.equal(root.get("memberStatus"), memberStatus);
     }
+
+    public static Specification<MemberGymMap> gymIdEquals(Integer gymId) {
+        return (root, query, criteriaBuilder) ->
+                gymId == null
+                        ? criteriaBuilder.conjunction()
+                        : criteriaBuilder.equal(root.get("gym").get("gymId"), gymId);
+    }
 }

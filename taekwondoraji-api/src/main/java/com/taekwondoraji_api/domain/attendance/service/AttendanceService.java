@@ -52,10 +52,47 @@ public class AttendanceService {
                 .orElseGet(() -> createAttendance(memberGymMapId, today));
     }
 
-    private AttendanceResponse createAttendance(Integer memberGymMapId, LocalDate today) {
+    @Transactional
+    public AttendanceResponse attendDate(Integer memberGymMapId, LocalDate attendanceDate) {
+        return memberAttendanceRepository
+                .findByMemberGymMap_MemberGymMapIdAndAttendanceDate(memberGymMapId, attendanceDate)
+                .map(AttendanceResponse::from)
+                .orElseGet(() -> createAttendance(memberGymMapId, attendanceDate));
+    }
+
+    @Transactional
+    public AttendanceResponse attendDate(Integer gymId, Integer memberGymMapId, LocalDate attendanceDate) {
+        validateGymMember(gymId, memberGymMapId);
+        return attendDate(memberGymMapId, attendanceDate);
+    }
+
+    @Transactional
+    public void deleteAttendanceDate(Integer memberGymMapId, LocalDate attendanceDate) {
+        if (!memberGymMapRepository.existsById(memberGymMapId)) {
+            throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
+        memberAttendanceRepository.deleteByMemberGymMap_MemberGymMapIdAndAttendanceDate(
+                memberGymMapId,
+                attendanceDate
+        );
+    }
+
+    @Transactional
+    public void deleteAttendanceDate(Integer gymId, Integer memberGymMapId, LocalDate attendanceDate) {
+        validateGymMember(gymId, memberGymMapId);
+        deleteAttendanceDate(memberGymMapId, attendanceDate);
+    }
+
+    private void validateGymMember(Integer gymId, Integer memberGymMapId) {
+        memberGymMapRepository.findByMemberGymMapIdAndGym_GymId(memberGymMapId, gymId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
+    }
+
+    private AttendanceResponse createAttendance(Integer memberGymMapId, LocalDate attendanceDate) {
         MemberGymMap memberGymMap = memberGymMapRepository.findById(memberGymMapId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
-        MemberAttendance attendance = MemberAttendance.create(memberGymMap, today);
+        MemberAttendance attendance = MemberAttendance.create(memberGymMap, attendanceDate);
         return AttendanceResponse.from(memberAttendanceRepository.save(attendance));
     }
 }

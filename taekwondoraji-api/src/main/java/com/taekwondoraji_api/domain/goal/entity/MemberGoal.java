@@ -51,4 +51,9 @@ public class MemberGoal {
         memberGoal.goalStatus = GoalStatus.progress;
         return memberGoal;
     }
+
+    public void complete() {
+        this.goalStatus = GoalStatus.complete;
+        this.completedAt = LocalDateTime.now();
+    }
 }

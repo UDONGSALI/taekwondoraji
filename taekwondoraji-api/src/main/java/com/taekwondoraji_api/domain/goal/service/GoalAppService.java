@@ -92,6 +92,19 @@ public class GoalAppService {
                 .orElseGet(() -> createMemberGoal(memberGymMapId, goalId));
     }
 
+    @Transactional
+    public void deleteGoalApplication(Integer memberGymMapId, Integer memberGoalId) {
+        MemberGoal memberGoal = memberGoalRepository
+                .findByMemberGoalIdAndMemberGymMap_MemberGymMapIdAndGoalStatus(
+                        memberGoalId,
+                        memberGymMapId,
+                        GoalStatus.progress
+                )
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
+
+        memberGoalRepository.delete(memberGoal);
+    }
+
     private boolean canApplyAgain(MemberGoal memberGoal) {
         if (memberGoal.getGoalStatus() != GoalStatus.complete) {
             return false;

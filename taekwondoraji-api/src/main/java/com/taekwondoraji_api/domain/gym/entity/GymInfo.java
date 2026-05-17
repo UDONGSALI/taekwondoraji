@@ -63,6 +63,30 @@ public class GymInfo extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    public static GymInfo create(
+            String gymName,
+            String businessNumber,
+            String ownerName,
+            String phoneNumber,
+            String postalCode,
+            String addressRoad,
+            String addressDetail,
+            String regionCode
+    ) {
+        GymInfo gymInfo = new GymInfo();
+        gymInfo.gymName = gymName;
+        gymInfo.businessNumber = businessNumber;
+        gymInfo.ownerName = ownerName;
+        gymInfo.phoneNumber = phoneNumber;
+        gymInfo.postalCode = postalCode;
+        gymInfo.addressRoad = addressRoad;
+        gymInfo.addressDetail = addressDetail;
+        gymInfo.regionCode = regionCode;
+        gymInfo.serviceStatus = GymServiceStatus.active;
+        gymInfo.isActive = true;
+        return gymInfo;
+    }
+
     public void updateServiceInfo(GymServiceStatus serviceStatus, LocalDate serviceStartDate, LocalDate serviceEndDate) {
         this.serviceStatus = serviceStatus;
         this.serviceStartDate = serviceStartDate;

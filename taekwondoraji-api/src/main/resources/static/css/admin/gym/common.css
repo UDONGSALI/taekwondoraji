@@ -373,17 +373,11 @@
         align-items: flex-start;
     }
 }
-.member-status-select {
-    min-width: 96px;
-    border: 1px solid #d8d0c4;
-    border-radius: 8px;
-    background: #fffaf3;
-    color: #3a2a1a;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 6px 8px;
+.detail-status-select {
+    width: 100%;
+    height: 42px;
 }
 
-.member-status-select:disabled {
+.detail-status-select:disabled {
     opacity: 0.55;
 }

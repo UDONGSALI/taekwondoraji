@@ -23,11 +23,15 @@ public class MemberGymService {
     private final MemberGymMapRepository memberGymMapRepository;
     private final MemberInfoRepository memberInfoRepository;
     private final GymInfoRepository gymInfoRepository;
+    private final MemberProfileImageStorageService memberProfileImageStorageService;
 
     public List<MyGymResponse> getMyGyms(Integer memberId) {
         return memberGymMapRepository.findAllByMemberInfo_MemberIdOrderByMemberGymMapIdDesc(memberId)
                 .stream()
-                .map(MyGymResponse::from)
+                .map(memberGymMap -> MyGymResponse.from(
+                        memberGymMap,
+                        memberProfileImageStorageService.findImageUrl(memberGymMap.getMemberInfo().getMemberId())
+                ))
                 .toList();
     }
 
@@ -43,6 +47,9 @@ public class MemberGymService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GYM_NOT_FOUND));
 
         MemberGymMap memberGymMap = MemberGymMap.create(memberInfo, gym);
-        return MyGymResponse.from(memberGymMapRepository.save(memberGymMap));
+        return MyGymResponse.from(
+                memberGymMapRepository.save(memberGymMap),
+                memberProfileImageStorageService.findImageUrl(memberId)
+        );
     }
 }

@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/fragments/layout :: layout('도장 상세', 'gyminfo', ~{::detailContent})}">
 <th:block th:fragment="detailContent">
-    <link rel="stylesheet" th:href="@{/css/admin/gym/common.css(v='6')}">
+    <link rel="stylesheet" th:href="@{/css/admin/gym/common.css(v='7')}">
     <script th:src="@{/js/admin/gym/detail.js(v='1')}" defer></script>
 
     <div class="detail-layout" th:attr="data-gym-id=${gymDetail.gymInfo.gymId}">
@@ -52,7 +52,7 @@
 
                     <div class="detail-field">
                         <span class="detail-label">서비스 상태</span>
-                        <select class="detail-control" name="serviceStatus" data-service-field>
+                        <select class="member-status-select detail-status-select" name="serviceStatus" data-service-field>
                             <option th:each="status : ${serviceStatuses}"
                                     th:value="${status.name()}"
                                     th:text="${status.label}"
